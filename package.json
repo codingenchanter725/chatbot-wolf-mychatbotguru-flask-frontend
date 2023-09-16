@@ -1,0 +1,17 @@
+{
+  "name": "webbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "action.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "flowbite": "^1.8.1",
+    "sass": "^1.66.1",
+    "tailwind-scrollbar": "^3.0.5",
+    "tailwindcss": "^3.3.3"
+  }
+}

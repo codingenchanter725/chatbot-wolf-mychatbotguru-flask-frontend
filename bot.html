@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Bot</title>
+	<!-- Tailwind CSS -->
+	<link href="./styles.css" rel="stylesheet">
+	<link rel="stylesheet" href="output.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="./action.js"></script>
+</head>
+
+<body>
+	<div class="bot-container">
+		<div class="hidden welocome-container w-full h-full flex flex-col items-center justify-between">
+			<div class="w-full flex items-center justify-end">
+
+				<div class='left-message w-full flex justify-end mb-2.5'>
+					<div class='flex'>
+						<div
+							class="left-message-text bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5 mr-2.5">
+							Hi! let us know how can we help
+						</div>
+					</div>
+				</div>
+				<img class="cursor-pointer" style="width: 60px; height: 60px;" src="./images/bot.png" alt="bot"
+					onclick="goChathandle()" />
+			</div>
+		</div>
+
+		<div class="chat-container w-[1200px] h-[768px] overflow-hidden scroll-smooth items-center bg-bg-primary">
+			<header class='w-full flex flex-col justify-around relative border-b border-border h-[120px]'>
+				<div class='w-full flex items-center justify-between relative'>
+					<button class='flex items-center'>
+						<img class='w-[107px] h-[107px] mr-3' src="./images/logo.png" alt='logo' />
+						<h1 class='text-[40px] font-medium'>FlashBot</h1>
+					</button>
+					<div class='flex items-center'>
+						<button class='w-[26px] h-[26px] mr-10' onclick="closeWindow()">
+							<img src="./images/min.png" alt='minimize' />
+						</button>
+						<button class='w-[26px] h-[26px] mr-10' onclick="changeSizeWindows()">
+							<div class="size-btn rotate-180">
+								<img class="rotate-180" src="./images/max.png" alt='maximize' />
+							</div>
+						</button>
+						<button class='w-[26px] h-[26px] mr-10' onclick="closeWindow()">
+							<img src="./images/close.png" alt='close' />
+						</button>
+					</div>
+				</div>
+			</header>
+			<div class='w-full h-[calc(100%_-_120px)]'>
+				<div class="w-full h-full flex flex-col justify-between px-6 py-4">
+					<div id="chat-wrap"
+						class="h-[calc(100%_-_50px)] overflow-x-hidden overflow-y-auto scrollbar scrollbar-w-1 scrollbar-thumb-primary scrollbar-track-gray-300 px-1">
+
+						<div class='hidden message-row left-message w-full flex mb-2.5 mr-8'>
+							<div class='flex items-start'>
+								<img class='w-12 h-12 mr-4' src="./images/bot.png" alt="bot" />
+								<div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+									How can I help you today?
+									<!-- <div class='flex items-center h-[24px] overflow-hidden'>
+                                        <img class='w-[48px] h-[48px]' src="./images//loading-dots.gif" alt="loading" />
+                                    </div> -->
+								</div>
+							</div>
+						</div>
+
+						<div class="faq-section hidden">
+							<div class='left-message w-full flex mb-2.5'>
+								<div class='flex items-start'>
+									<img class='w-12 h-12 mr-4' src="./images/bot.png" alt="bot" />
+									<div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+										How can I help you today?
+									</div>
+								</div>
+							</div>
+							<div class="hidden ml-[72px]">
+								<span class="cursor-pointer">
+									<div class='message-row left-message w-full flex mb-2.5'>
+										<div class='flex items-start'>
+											<div
+												class="left-message-text !border-primary border !rounded-none !mb-0 bg-white shadow-message rounded-r-lg rounded-tl-lg p-2">
+												How can I help you today?
+											</div>
+										</div>
+									</div>
+								</span>
+							</div>
+						</div>
+
+						<div class='hidden message-row right-message w-full flex justify-end mb-2.5 pr-8'>
+							<div class='flex items-start'>
+								<div
+									class="right-message-text bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
+									Hi! let us know how can we help
+
+									<!-- <div class='flex items-center h-[24px] overflow-hidden'>
+                                        <img class='w-[48px] h-[48px]' src="./images//loading-dots.gif" alt="loading" />
+                                    </div> -->
+								</div>
+								<img class='w-12 h-12 ml-4' src="./images/bot.png" alt="bot" />
+							</div>
+						</div>
+
+						<div class="user-form hidden">
+							<div class='left-message w-full flex mb-2.5'>
+								<div class='flex items-start'>
+									<img class='w-12 h-12 mr-4' src="./images/bot.png" alt="bot" />
+									<div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+										Please, Provide you Email address, Phone number, First Name and Last Name
+										<!-- <div class='flex items-center h-[24px] overflow-hidden'>
+                                            <img class='w-[48px] h-[48px]' src="./images//loading-dots.gif" alt="loading" />
+                                        </div> -->
+									</div>
+								</div>
+							</div>
+							<div class='w-[400px] ml-[73px] '>
+								<div class='w-full flex mb-2'>
+									<div class="w-full relative flex items-center">
+										<input id="firstname" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
+											placeholder='First Name' />
+										<!-- <div class='absolute left-4 h-[20px] aspect-[1/1]'>
+                                            <img class="w-full h-full" src="./images/simple-loading.gif" alt='loading' />
+                                        </div>
+                                        <div class='absolute right-4 aspect-[1/1]'>
+                                            <img class="w-[24px] h-[24px]" src="./images/eye.png" alt="password" />
+                                        </div> -->
+									</div>
+									<div class="w-full relative flex items-center">
+										<input id="lastname" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
+											placeholder='Last Name' />
+									</div>
+								</div>
+								<div class='w-full flex mb-2'>
+									<div class="w-full relative flex items-center">
+										<input id="email" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
+											placeholder='Email' />
+									</div>
+									<div class="w-full relative flex items-center">
+										<input id="phone" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
+											placeholder='Phone' />
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="full">
+						<div class='w-full flex justify-between items-center'>
+							<div class="flex items-center">
+
+								<button class="hidden w-[40px] h-[40px] flex items-center justify-center bg-white rounded-full mr-4">
+									<img class="w-full h-full" src="./images/chat_history.png" alt="chat history" />
+								</button>
+								<button class="hidden w-[38px] h-[38px] relative flex items-center justify-center mr-4">
+									<input class="absolute left-0 top-0 w-[38px] h-[38px] bg-transparent opacity-0" type="file" />
+									<!-- <span class="w-[200px] text-left absolute left-0 -top-5 text-sm">{file?.name}</span> -->
+									<img class="w-full h-full" src="./images/file_import.png" alt="file import" />
+								</button>
+
+
+								<button class="w-[40px] h-[40px] flex items-center justify-center bg-white rounded-full mr-4">
+									<img class="w-[19px] h-[19px]" src="./images/plus.png" alt="plus" />
+								</button>
+								<a onclick="downloadTranscript()" class="w-[38px] h-[38px] flex items-center justify-center mr-4">
+									<img class="w-full h-full" src="./images/download.png" alt="download" />
+								</a>
+
+							</div>
+							<div class="w-full relative flex items-center">
+								<input id="text" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2' placeholder='Type something...' 
+									onkeydown="handleKeydown(event)"
+								/>
+							</div>
+							<button class="w-[42px] h-[36px] flex items-center justify-center ml-4" onclick="sendHandle()">
+								<img class="w-full h-full" src="./images/send.png" alt="send" />
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+</html>

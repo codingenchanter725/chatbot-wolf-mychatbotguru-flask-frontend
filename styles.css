@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    background: black;
+}
+
+.bot-container {
+    position: fixed;
+    right: 40px;
+    bottom: 40px;
+    z-index: 100000;
+}
+
+
+/* @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap'); */
+
+* {
+    font-family: 'IBM Plex Sans', Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+#root {
+    width: 100vw;
+    height: 100vh;
+}
+
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+    /* Safari */
+    -khtml-user-drag: none;
+    /* Konqueror */
+    -moz-user-drag: none;
+    /* Firefox */
+    -o-user-drag: none;
+    /* Opera */
+}
+
+input {
+    outline: none;
+
+    /* &:focus {
+        box-shadow: none !important;
+    } */
+}
+
+button {
+    outline: none;
+    box-shadow: none;
+    border: 0px;
+}
+
+ul,
+li {
+    margin: 0px;
+    padding: 0px;
+}
+
+a {
+    outline: none;
+    text-decoration: none;
+}
+
+.max-now {
+    position: fixed;
+    left: 0;
+    right: unset;
+    top: 0;
+    bottom: unset;
+    width: 100vw !important;
+    height: 100vh !important;
+}
+
+.admin-bot-menu.active {
+    @apply bg-primary text-white
+}
+
+.admin-bot-content.active {
+    @apply flex
+}
