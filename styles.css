@@ -20,6 +20,7 @@ body {
 * {
     font-family: 'IBM Plex Sans', Arial, Helvetica, sans-serif;
     box-sizing: border-box;
+    @apply scrollbar scrollbar-w-1 scrollbar-thumb-primary scrollbar-track-gray-300
 }
 
 #root {
