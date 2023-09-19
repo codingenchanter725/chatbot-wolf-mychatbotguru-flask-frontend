@@ -1,8 +1,8 @@
-const BASE_URL = "http://localhost:5000";
+const BOT_API_BASE_URL = "http://34.30.137.2";
 
 const createAxiosInstance = (config = {}) => {
     const instance = axios.create({
-        baseURL: BASE_URL,
+        baseURL: BOT_API_BASE_URL,
         headers: {
             'Content-Type': 'application/json',
             Authorization: `${localStorage.getItem('accessToken')}`,
@@ -16,13 +16,13 @@ const createAxiosInstance = (config = {}) => {
 };
 
 const goChathandle = () => {
-    jQuery('.welocome-container').addClass("hidden")
+    jQuery('.welcome-container').addClass("hidden")
     jQuery('.chat-container').removeClass("hidden")
 }
 
 const closeWindow = () => {
     jQuery('.chat-container').addClass("hidden")
-    jQuery('.welocome-container').removeClass("hidden")
+    jQuery('.welcome-container').removeClass("hidden")
 }
 
 const changeSizeWindows = () => {
@@ -99,11 +99,11 @@ const sendHandle = async () => {
         let bot_chat_row = `
             <div class='chat_new_bot message-row left-message w-full flex mb-2.5 mr-8'>
                 <div class='flex items-start'>
-                    <img class='w-12 h-12 mr-4' src="./images/bot.png" alt="bot" />
+                    <img class='w-12 h-12 mr-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                     <div
                         class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
                         <div class='flex items-center h-[24px] overflow-hidden'>
-                            <img class='w-[48px] h-[48px]' src="./images//loading-dots.gif" alt="loading" />
+                            <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
                         </div>
                     </div>
                 </div>
@@ -156,7 +156,7 @@ const handleKeydown = (e) => {
 
 const downloadTranscript = async () => {
     let session_id = sessionId();
-    location.href = BASE_URL + '/download/transcript/' + session_id;
+    location.href = BOT_API_BASE_URL + '/download/transcript/' + session_id;
 }
 
 const selectFAQHandle = (fId) => {
@@ -167,6 +167,7 @@ const selectFAQHandle = (fId) => {
 
 jQuery(document).ready(() => {
     try {
+        if (location.pathname.indexOf('afrilabs-admin') != -1) return;
         (async () => {
             let sId = sessionId();
             const axios = createAxiosInstance();
@@ -181,7 +182,7 @@ jQuery(document).ready(() => {
                         ${item.is_bot ? `
                             <div class='chat_${item.id} message-row left-message w-full flex mb-2.5 pr-8'>
                                 <div class='flex items-start'>
-                                    <img class='w-12 h-12 mr-4' src="./images/bot.png" alt="bot" />
+                                    <img class='w-12 h-12 mr-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                                     <div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
                                         ${item.text}
                                     </div>
@@ -204,7 +205,7 @@ jQuery(document).ready(() => {
 
                 if (chats.length < 4) {
                     jQuery('#chat-wrap').append(jQuery('.faq-section'));
-                    const faqResponse = await axios.get(`${BASE_URL}/faq/0`);
+                    const faqResponse = await axios.get(`${BOT_API_BASE_URL}/faq/0`);
                     if (faqResponse.data) {
                         let faqDatas = faqResponse.data.data;
                         faqDatas.map((item, index) => {

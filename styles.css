@@ -2,33 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-
-body {
-    background: black;
-}
-
 .bot-container {
     position: fixed;
-    right: 40px;
-    bottom: 40px;
-    z-index: 100000;
+    right: 40px !important;
+    top: unset !important;
+    bottom: 40px !important;
+    z-index: 120000;
+
+    @apply shadow-message
+}
+
+.bot-admin-container {
+    width: 100vw;
+    height: calc(100vh - 73px);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 110000;
 }
 
 
 /* @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap'); */
 
-* {
+.bot-admin-container *, .bot-container * {
     font-family: 'IBM Plex Sans', Arial, Helvetica, sans-serif;
     box-sizing: border-box;
     @apply scrollbar scrollbar-w-1 scrollbar-thumb-primary scrollbar-track-gray-300
 }
 
-#root {
-    width: 100vw;
-    height: 100vh;
-}
-
-img {
+.bot-admin-container img, .bot-container img {
     user-select: none;
     -webkit-user-drag: none;
     /* Safari */
@@ -40,7 +42,7 @@ img {
     /* Opera */
 }
 
-input {
+.bot-admin-container input, .bot-container input {
     outline: none;
 
     /* &:focus {
@@ -48,24 +50,28 @@ input {
     } */
 }
 
-button {
+.bot-admin-container button, .bot-container button {
     outline: none;
     box-shadow: none;
     border: 0px;
 }
 
-ul,
-li {
+.bot-admin-container ul, .bot-container ul {
     margin: 0px;
     padding: 0px;
 }
 
-a {
+.bot-admin-container li, .bot-container li {
+    margin: 0px;
+    padding: 0px;
+}
+
+.bot-admin-container a, .bot-container a {
     outline: none;
     text-decoration: none;
 }
 
-.max-now {
+.bot-admin-container .max-now, .bot-container .max-now  {
     position: fixed;
     left: 0;
     right: unset;

@@ -1,4 +1,5 @@
-let BOT_API_BASE_URL = "http://34.30.137.2";
+// const BOT_API_BASE_URL = "https://34.30.137.2";
+const BOT_API_BASE_URL = "http://127.0.0.1:5000";
 
 const createAxiosInstance = (config = {}) => {
     const instance = axios.create({
@@ -15,6 +16,255 @@ const createAxiosInstance = (config = {}) => {
     return instance;
 };
 
+const goChathandle = () => {
+    jQuery('.welcome-container').addClass("hidden")
+    jQuery('.chat-container').removeClass("hidden")
+}
+
+const closeWindow = () => {
+    jQuery('.chat-container').addClass("hidden")
+    jQuery('.welcome-container').removeClass("hidden")
+}
+
+const changeSizeWindows = () => {
+    jQuery('.size-btn').toggleClass("rotate-180");
+    jQuery('.chat-container').toggleClass("max-now")
+}
+
+const scrollDown = () => {
+    jQuery('#chat-wrap')[0].scrollTop = 10000000000;
+}
+
+const clearText = () => {
+    jQuery('#text').val("");
+}
+
+
+const sessionId = () => {
+    let sId = localStorage.getItem("session_id");
+    return (!sId || sId == 'undefined' || sId == "") ? 0 : sId;
+}
+const setSessionId = (sId) => {
+    localStorage.setItem('session_id', sId);
+}
+
+const toggleTextReadOnly = (val, is_user) => {
+    if (val && !is_user) {
+        jQuery('#text').attr('readOnly', val);
+        console.log(is_user)
+        jQuery('#chat-wrap').append(jQuery('.user-form'));
+        jQuery('.user-form').removeClass('hidden')
+    }
+}
+
+let AIThinking = false, totalChat = 0;
+
+const sendHandle = async () => {
+    try {
+        if (jQuery('#text').attr('readOnly')) {
+
+            const axios = createAxiosInstance();
+            let response = await axios.post(`/register`, {
+                'first_name': jQuery('#firstname').val(),
+                'last_name': jQuery('#lastname').val(),
+                'email': jQuery('#email').val(),
+                'phone': jQuery('#phone').val(),
+                'password': 'User$123',
+                'session_id': sessionId()
+            });
+            if (response.data) {
+                console.log('UserForm', response.data)
+                if (response.data.message === "Email is already taken") {
+                    alert("Email is already taken")
+                } else {
+                    jQuery('.user-form').addClass('hidden')
+                    jQuery('#text').attr('readOnly', false);
+                }
+            }
+            return;
+        }
+
+        let text = jQuery("#text").val().trim();
+        if (!text) return;
+        clearText();
+        let user_chat_row = `
+            <div class='chat_new_user message-row right-message w-full flex justify-end mb-2.5 pl-8'>
+                <div class='flex items-start'>
+                    <div class="right-message-text bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
+                        ${text}
+                    </div>
+                </div>
+            </div>
+        `;
+        jQuery('#chat-wrap').append(user_chat_row);
+        let bot_chat_row = `
+            <div class='chat_new_bot message-row left-message w-full flex mb-2.5 mr-8'>
+                <div class='flex items-start'>
+                    <img class='w-12 h-12 mr-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
+                    <div
+                        class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+                        <div class='flex items-center h-[24px] overflow-hidden'>
+                            <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        jQuery('#chat-wrap').append(bot_chat_row);
+        scrollDown();
+        let sId = sessionId();
+        const axios = createAxiosInstance();
+        let response = await axios.post(`/chats/${sId}`, {
+            text: text
+        });
+        if (response.data) {
+            let data = response.data.data;
+            if (data.session_id) setSessionId(data.session_id);
+            jQuery('.chat_new_user').addClass(`chat_${data.chat_id}`);
+            jQuery('.chat_new_user').removeClass("chat_new_user");
+            jQuery('.chat_new_bot').addClass(`chat_${data.bot_chat_id}`);
+            jQuery('.chat_new_bot').find('.left-message-text').html(data.text_ai);
+            jQuery('.chat_new_bot').find('.left-message-text img').remove();
+            jQuery('.chat_new_bot').removeClass("chat_new_bot");
+            scrollDown();
+            totalChat += 2;
+        }
+
+        if (totalChat >= 4) {
+            jQuery('.faq-section').remove();
+            if (totalChat > 4) {
+                jQuery('.user-form').remove();
+            }
+        }
+        if (totalChat == 4) {
+            /// user form handle
+            toggleTextReadOnly(true)
+        }
+        if (totalChat < 4) {
+            jQuery('#chat-wrap').append(jQuery('.faq-section'));
+            jQuery('.faq-section').removeClass('hidden')
+        }
+    } catch (err) {
+        console.log('sendhandle', err);
+    }
+}
+
+const handleKeydown = (e) => {
+    if (e.code == "Enter") {
+        sendHandle();
+    }
+}
+
+const downloadTranscript = async () => {
+    let session_id = sessionId();
+    location.href = BOT_API_BASE_URL + '/download/transcript/' + session_id;
+}
+
+const selectFAQHandle = (fId) => {
+    let text = jQuery(`.faq_${fId}`).find('.left-message-text').text().trim();
+    jQuery('#text').val(text);
+    sendHandle();
+}
+
+jQuery(document).ready(() => {
+    try {
+        if (location.pathname.indexOf('afrilabs-admin') != -1) return;
+        // if (location.pathname.indexOf('afrilabs-admin') != -1) {
+            jQuery('.welcome-container').removeClass('hidden');
+            jQuery('.bot-container').attr("style", "top: unset!important")
+            window.addEventListener("resize", () => {
+                jQuery('.bot-container').attr("style", "top: unset!important");
+                setTimeout(() => {
+                    jQuery('.bot-container').attr("style", "top: unset!important");
+                })
+            });
+            window.addEventListener("scroll", () => {
+                jQuery('.bot-container').attr("style", "top: unset!important")
+                setTimeout(() => {
+                    jQuery('.bot-container').attr("style", "top: unset!important")
+                })
+            });
+        // }
+
+        (async () => {
+            let sId = sessionId();
+            const axios = createAxiosInstance();
+            const response = await axios.get(`/chats/${sId}`);
+            if (response.data) {
+                jQuery('#chat-wrap').find('.message-row ').remove();
+
+                let chats = response.data.data;
+                totalChat = chats.length;
+                chats.map((item, index) => {
+                    let chat_row = `
+                        ${item.is_bot ? `
+                            <div class='chat_${item.id} message-row left-message w-full flex mb-2.5 pr-8'>
+                                <div class='flex items-start'>
+                                    <img class='w-12 h-12 mr-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
+                                    <div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+                                        ${item.text}
+                                    </div>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class='chat_${item.id} message-row right-message w-full flex justify-end mb-2.5 pl-8'>
+                                <div class='flex items-start'>
+                                    <div
+                                        class="right-message-text bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
+                                        ${item.text}
+                                    </div>
+                                </div>
+                            </div>
+                        `}
+                    `;
+                    jQuery('#chat-wrap').append(chat_row);
+                    scrollDown()
+                })
+
+                if (chats.length < 4) {
+                    jQuery('#chat-wrap').append(jQuery('.faq-section'));
+                    const faqResponse = await axios.get(`${BOT_API_BASE_URL}/faq/0`);
+                    if (faqResponse.data) {
+                        let faqDatas = faqResponse.data.data;
+                        faqDatas.map((item, index) => {
+                            let faq_row = `
+                                <div class="${'faq_' + item.id} ml-[72px]">
+                                    <span class="cursor-pointer" onclick="selectFAQHandle(${item.id})">
+                                        <div id="chat_${item.id}" class='left-message w-full flex mb-2.5 pr-8'>
+                                            <div class='flex items-start'>
+                                                <div class="left-message-text !border-primary border !rounded-none bg-white !mb-0 shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+                                                    ${item.text}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            `;
+                            jQuery('.faq-section').append(faq_row)
+                            scrollDown()
+                        })
+                    }
+                    jQuery('.faq-section').toggleClass('hidden');
+                    scrollDown()
+                }
+                if (totalChat == 4) {
+                    toggleTextReadOnly(true, response.data.user.email ? true : false)
+                }
+            }
+        })()
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+
+
+
+
+
+
+
+// -------------------------------------------------------------------------------- bot-admin ============================================================
 const adminLoginHandle = async () => {
     let email = jQuery("#admin-bot-email").val();
     let password = jQuery("#admin-bot-password").val();
@@ -100,9 +350,9 @@ const saveFaqHandle = async (fId) => {
             jQuery(`.faq-${fId}`).find('.faq-save').addClass('hidden');
             if (fId == '0' || fId == 0) {
                 jQuery(`.faq-0`).addClass(`faq-${response.data.faq_id}`);
-                jQuery(`.faq-0`).find('.faq-edit').attr('onclick', `editHandle(${response.data.faq_id})`);
-                jQuery(`.faq-0`).find('.faq-save').attr('onclick', `saveHandle(${response.data.faq_id})`);
-                jQuery(`.faq-0`).find('.faq-delete').attr('onclick', `deleteHandle(${response.data.faq_id})`);
+                jQuery(`.faq-0`).find('.faq-edit').attr('onclick', `editFaqHandle(${response.data.faq_id})`);
+                jQuery(`.faq-0`).find('.faq-save').attr('onclick', `saveFaqHandle(${response.data.faq_id})`);
+                jQuery(`.faq-0`).find('.faq-delete').attr('onclick', `deleteFaqHandle(${response.data.faq_id})`);
                 jQuery(`.faq-0`).removeClass('faq-0');
             }
         }
@@ -153,15 +403,7 @@ const addFaqHandle = () => {
     `;
     jQuery('.bot-admin-faq-section').append(userRow);
 }
-
-const sessionId = () => {
-    let sId = localStorage.getItem("session_id");
-    return (!sId || sId == 'undefined' || sId == "") ? 0 : sId;
-}
-const setSessionId = (sId) => {
-    localStorage.setItem('session_id', sId);
-}
-const scrollDown = () => {
+const scrollDownAdmin = () => {
     jQuery('.bot-admin-chat-wrap')[0].scrollTop = 10000000000;
 }
 
@@ -189,7 +431,7 @@ const fileValidate = (f) => {
     return true;
 }
 
-let totalChat = 0, file;
+let file;
 
 const sendAdminHandle = async () => {
     let text = jQuery('#admin-text').val();
@@ -237,7 +479,7 @@ const sendAdminHandle = async () => {
                 </div>
             `;
             jQuery('.bot-admin-chat-wrap').append(bot_chat_row);
-            scrollDown();
+            scrollDownAdmin();
             let sId = sessionId();
             console.log(sId);
             const axios = createAxiosInstance();
@@ -251,6 +493,8 @@ const sendAdminHandle = async () => {
                         jQuery('.chat_new_user').find('.progress-container').remove();
                         jQuery('.chat_new_user').find('.tick-img').removeClass('hidden');
                         jQuery('.imported_file_name').text("");
+                        file = "";
+                        jQuery('#file_import').val("");
                     } else {
                         jQuery('.chat_new_user').find('.progress-percent')[0].style.width = progress + '%';
                     }
@@ -265,7 +509,7 @@ const sendAdminHandle = async () => {
                 jQuery('.chat_new_bot').find('.right-message-text').html(data.text_ai);
                 jQuery('.chat_new_bot').find('.right-message-text img').remove();
                 jQuery('.chat_new_bot').removeClass("chat_new_bot");
-                scrollDown();
+                scrollDownAdmin();
                 totalChat += 2;
             }
         } else {
@@ -295,7 +539,7 @@ const sendAdminHandle = async () => {
                 </div>
             `;
             jQuery('.bot-admin-chat-wrap').append(bot_chat_row);
-            scrollDown();
+            scrollDownAdmin();
             let sId = sessionId();
             const axios = createAxiosInstance();
             let response = await axios.post(`/chats/${sId}`, {
@@ -310,7 +554,7 @@ const sendAdminHandle = async () => {
                 jQuery('.chat_new_bot').find('.right-message-text').html(data.text_ai);
                 jQuery('.chat_new_bot').find('.right-message-text img').remove();
                 jQuery('.chat_new_bot').removeClass("chat_new_bot");
-                scrollDown();
+                scrollDownAdmin();
                 totalChat += 2;
             }
         }
@@ -336,26 +580,57 @@ const downloadUserChatHistory = async (uId) => {
     location.href = BOT_API_BASE_URL + '/download/user/' + uId;
 }
 
+const delteChatHandle = async (cId) => {
+    try {
+        const axios = createAxiosInstance();
+        let response = await axios.delete('/chats/' + cId);
+        if (response.data) {
+            jQuery(`.chat_${cId}`).remove();
+        }
+        return false
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const updateAnalysis = async () => {
+    try {
+        const axios = createAxiosInstance();
+        let start_time = jQuery("#start_date").val();
+        let end_time = jQuery("#end_date").val();
+        console.log(start_time, end_time);
+        if (start_time) start_time =  "&start_time=" + new Date(start_time).getTime() / 1000;
+        if (end_time) end_time =  "&end_time=" + new Date(end_time).getTime() / 1000;
+        console.log(start_time, end_time);
+        let response = await axios.get(`/admin?$${start_time}${end_time}`)
+        if (response.data) {
+            console.log(response.data);
+            let data = response.data.data;
+            jQuery('#totalChatCount').html(data.chat_count);
+            jQuery('#totalUserCount').html(data.user_count);
+            jQuery('#averageChatCount').html(Math.round(data.average_chat_count_by_user));
+            jQuery('#maxDuration').html(formatTimeBySecond(data.max_duration));
+            jQuery('#maxChatCountByOneUser').html(data.max_chat_count_by_one_user);
+            jQuery('#totalDownloadCount').html(data.total_download_count);
+
+            
+            jQuery('.bot-admin-content-container').removeClass('hidden');
+            jQuery('.bot-admin-login-container').addClass('hidden');
+        }
+    } catch (err) {
+        console.log("bot-admin-content-container", err)
+        jQuery('.bot-admin-content-container').addClass('hidden');
+        jQuery('.bot-admin-login-container').removeClass('hidden');
+    }
+}
+
 jQuery(document).ready(() => {
     (async () => {
-        try {
-            const axios = createAxiosInstance();
-            let response = await axios.get(`/admin`)
-            if (response.data) {
-                console.log(response.data);
-                let data = response.data.data;
-                jQuery('#totalChatCount').html(data.chat_count);
-                jQuery('#totalUserCount').html(data.user_count);
-                jQuery('#averageChatCount').html(Math.round(data.average_chat_count_by_user));
-                jQuery('#maxDuration').html(formatTimeBySecond(data.max_duration));
-                jQuery('#maxChatCountByOneUser').html(data.max_chat_count_by_one_user);
-                jQuery('#totalDownloadCount').html(data.total_download_count);
-            }
+        updateAnalysis();
 
+        try {
             const faqResponse = await axios.get(`/faq/0`);
             if (faqResponse.data) {
-                jQuery('.bot-admin-content-container').removeClass('hidden');
-                jQuery('.bot-admin-login-container').addClass('hidden');
                 let faqDatas = faqResponse.data.data;
                 faqDatas.map((item, index) => {
                     let faq_row = `
@@ -369,10 +644,8 @@ jQuery(document).ready(() => {
                     jQuery('.admin-faq-section').append('<li class="text-lg mt-2">There is nothing yet</li>');
                 }
             }
-        } catch (err) {
-            console.log("bot-admin-content-container", err)
-            jQuery('.bot-admin-content-container').addClass('hidden');
-            jQuery('.bot-admin-login-container').removeClass('hidden');
+        } catch(err) {
+            console.log(err);
         }
 
         try {
@@ -458,7 +731,7 @@ jQuery(document).ready(() => {
                         ${!item.is_bot ? `
                             <div class='chat_${item.id} message-row left-message w-full flex mb-2.5 pr-8'>
                                 <div class='flex items-start'>
-                                    <div class="left-message-text bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+                                    <div class="left-message-text relative bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
                                         
                                         ${item.file ? `
                                             <p class="mb-2">${item.text}</p>
@@ -468,6 +741,8 @@ jQuery(document).ready(() => {
                                                 <img class="w-[10px] h-[10px] ml-1" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/tick.png" alt="tickImage" />
                                             </div>
                                         ` : `${item.text}`}
+
+                                        <button class="absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                                     </div>
                                 </div>
                             </div>
@@ -475,8 +750,9 @@ jQuery(document).ready(() => {
                             <div class='chat_${item.id} message-row right-message w-full flex justify-end mb-2.5 pl-8'>
                                 <div class='flex items-start'>
                                     <div
-                                        class="right-message-text bg-white text-black shadow-message rounded-l-lg rounded-tr-lg p-2.5">
+                                        class="right-message-text relative bg-white text-black shadow-message rounded-l-lg rounded-tr-lg p-2.5">
                                         ${item.text}
+                                        <button class="absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                                     </div>
                                     <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                                 </div>
@@ -484,7 +760,7 @@ jQuery(document).ready(() => {
                         `}
                     `;
                     jQuery('.bot-admin-chat-wrap').append(chat_row);
-                    scrollDown();
+                    scrollDownAdmin();
                 })
             }
         } catch (error) {
