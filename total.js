@@ -202,7 +202,7 @@ jQuery(document).ready(() => {
                                 <div class='flex items-start'>
                                     <img class='w-10 h-10 mr-2' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                                     <div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
-                                        ${item.text}
+                                        <pre>${item.text}</pre>
                                     </div>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@ jQuery(document).ready(() => {
                                 <div class='flex items-start'>
                                     <div
                                         class="right-message-text bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
-                                        ${item.text}
+                                        <pre>${item.text}</pre>
                                     </div>
                                 </div>
                             </div>
@@ -450,8 +450,8 @@ const sendAdminHandle = async () => {
                 <div class='chat_new_user message-row left-message w-full flex mb-2.5 mr-8'>
                     <div class='flex items-start'>
                         <div
-                            class="left-message-text bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
-                            <p class="mb-2">${text}</p>
+                            class="left-message-text relative bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+                            <p class="mb-2"><pre>${text}</pre></p>
                             <img class="w-[20px] h-[20px]" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/attachment.png" alt="attachmentImage" />
                             <div class="flex items-center justify-end mt-1">
                                 <div class="progress-container w-[80px] h-[6px] p-[1px] bg-progress-bar">
@@ -461,6 +461,7 @@ const sendAdminHandle = async () => {
                                 <label class="ml-2 leading-none text-[10px] text-white">${formatFileSize(file.size)}</label>
                                 <img class="tick-img hidden w-[10px] h-[10px] ml-1" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/tick.png" alt="tickImage" />
                             </div>
+                            <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
                     </div>
                 </div>
@@ -469,10 +470,11 @@ const sendAdminHandle = async () => {
             let bot_chat_row = `
                 <div class='chat_new_bot message-row right-message w-full flex justify-end mb-2.5 pl-8'>
                     <div class='flex items-start'>
-                        <div class="right-message-text bg-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
+                        <div class="right-message-text relative bg-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
                             <div class='flex items-center h-[24px] overflow-hidden'>
                                 <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
                             </div>
+                            <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
                         <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                     </div>
@@ -505,7 +507,9 @@ const sendAdminHandle = async () => {
                 if (data.session_id) setSessionId(data.session_id);
                 jQuery('.chat_new_user').addClass(`chat_${data.chat_id}`);
                 jQuery('.chat_new_user').removeClass("chat_new_user");
+                jQuery('.chat_new_user').find(".delete-chat").attr("onclick", `delteChatHandle(${data.chat_id})`);
                 jQuery('.chat_new_bot').addClass(`chat_${data.bot_chat_id}`);
+                jQuery('.chat_new_bot').find(".delete-chat").attr("onclick", `delteChatHandle(${data.bot_chat_id})`);
                 jQuery('.chat_new_bot').find('.right-message-text').html(data.text_ai);
                 jQuery('.chat_new_bot').find('.right-message-text img').remove();
                 jQuery('.chat_new_bot').removeClass("chat_new_bot");
@@ -520,7 +524,7 @@ const sendAdminHandle = async () => {
                     <div class='flex items-start'>
                         <div
                             class="left-message-text bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
-                            ${text}
+                            <pre>${text}</pre>
                         </div>
                     </div>
                 </div>
@@ -734,15 +738,15 @@ jQuery(document).ready(() => {
                                     <div class="left-message-text relative bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
                                         
                                         ${item.file ? `
-                                            <p class="mb-2">${item.text}</p>
+                                            <p class="mb-2"><pre>${item.text}</pre></p>
                                             <img class="w-[20px] h-[20px]" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/attachment.png" alt="attachmentImage" />
                                             <div class="flex items-center justify-end mt-1">
                                                 <label class="ml-2 leading-none text-[10px] text-white">${formatFileSize(item.file.size)}</label>
                                                 <img class="w-[10px] h-[10px] ml-1" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/tick.png" alt="tickImage" />
                                             </div>
-                                        ` : `${item.text}`}
+                                        ` : `<pre>${item.text}</pre>`}
 
-                                        <button class="absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
+                                        <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                                     </div>
                                 </div>
                             </div>
@@ -751,8 +755,8 @@ jQuery(document).ready(() => {
                                 <div class='flex items-start'>
                                     <div
                                         class="right-message-text relative bg-white text-black shadow-message rounded-l-lg rounded-tr-lg p-2.5">
-                                        ${item.text}
-                                        <button class="absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
+                                        <pre>${item.text}</pre>
+                                        <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                                     </div>
                                     <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                                 </div>
