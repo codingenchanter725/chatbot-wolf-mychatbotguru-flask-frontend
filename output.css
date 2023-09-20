@@ -901,10 +901,6 @@ input[type="range"]::-ms-fill-lower {
   top: 0px;
 }
 
-.top-\[6px\] {
-  top: 6px;
-}
-
 .\!mb-0 {
   margin-bottom: 0px !important;
 }
@@ -949,12 +945,12 @@ input[type="range"]::-ms-fill-lower {
   margin-left: 1.5rem;
 }
 
-.ml-\[72px\] {
-  margin-left: 72px;
+.ml-\[56px\] {
+  margin-left: 56px;
 }
 
-.ml-\[73px\] {
-  margin-left: 73px;
+.ml-\[72px\] {
+  margin-left: 72px;
 }
 
 .mr-10 {
@@ -1013,6 +1009,10 @@ input[type="range"]::-ms-fill-lower {
   height: 0.25rem;
 }
 
+.h-10 {
+  height: 2.5rem;
+}
+
 .h-12 {
   height: 3rem;
 }
@@ -1035,6 +1035,10 @@ input[type="range"]::-ms-fill-lower {
 
 .h-\[120px\] {
   height: 120px;
+}
+
+.h-\[16px\] {
+  height: 16px;
 }
 
 .h-\[19px\] {
@@ -1077,12 +1081,16 @@ input[type="range"]::-ms-fill-lower {
   height: 48px;
 }
 
-.h-\[6px\] {
-  height: 6px;
+.h-\[500px\] {
+  height: 500px;
 }
 
-.h-\[768px\] {
-  height: 768px;
+.h-\[60px\] {
+  height: 60px;
+}
+
+.h-\[6px\] {
+  height: 6px;
 }
 
 .h-\[80px\] {
@@ -1095,6 +1103,10 @@ input[type="range"]::-ms-fill-lower {
 
 .h-\[calc\(100\%_-_50px\)\] {
   height: calc(100% - 50px);
+}
+
+.h-\[calc\(100\%_-_60px\)\] {
+  height: calc(100% - 60px);
 }
 
 .h-\[calc\(100\%_-_80px\)\] {
@@ -1117,6 +1129,10 @@ input[type="range"]::-ms-fill-lower {
   width: 25%;
 }
 
+.w-10 {
+  width: 2.5rem;
+}
+
 .w-12 {
   width: 3rem;
 }
@@ -1137,8 +1153,8 @@ input[type="range"]::-ms-fill-lower {
   width: 10px;
 }
 
-.w-\[1200px\] {
-  width: 1200px;
+.w-\[16px\] {
+  width: 16px;
 }
 
 .w-\[19px\] {
@@ -1165,8 +1181,16 @@ input[type="range"]::-ms-fill-lower {
   width: 28px;
 }
 
+.w-\[320px\] {
+  width: 320px;
+}
+
 .w-\[32px\] {
   width: 32px;
+}
+
+.w-\[36px\] {
+  width: 36px;
 }
 
 .w-\[380px\] {
@@ -1191,6 +1215,10 @@ input[type="range"]::-ms-fill-lower {
 
 .w-\[48px\] {
   width: 48px;
+}
+
+.w-\[60px\] {
+  width: 60px;
 }
 
 .w-\[80px\] {
@@ -1420,6 +1448,11 @@ input[type="range"]::-ms-fill-lower {
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
+}
+
+.py-1\.5 {
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
 }
 
 .py-2 {

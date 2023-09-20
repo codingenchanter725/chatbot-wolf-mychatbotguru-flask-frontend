@@ -99,7 +99,7 @@ const sendHandle = async () => {
         let bot_chat_row = `
             <div class='chat_new_bot message-row left-message w-full flex mb-2.5 mr-8'>
                 <div class='flex items-start'>
-                    <img class='w-12 h-12 mr-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
+                    <img class='w-10 h-10 mr-2' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                     <div
                         class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
                         <div class='flex items-center h-[24px] overflow-hidden'>
@@ -182,7 +182,7 @@ jQuery(document).ready(() => {
                         ${item.is_bot ? `
                             <div class='chat_${item.id} message-row left-message w-full flex mb-2.5 pr-8'>
                                 <div class='flex items-start'>
-                                    <img class='w-12 h-12 mr-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
+                                    <img class='w-10 h-10 mr-2' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                                     <div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
                                         ${item.text}
                                     </div>
