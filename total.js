@@ -91,7 +91,7 @@ const sendHandle = async () => {
             <div class='chat_new_user message-row right-message w-full flex justify-end mb-2.5 pl-8'>
                 <div class='flex items-start'>
                     <div class="right-message-text bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
-                        <pre>${text}/pre>
+                        <pre>${text}</pre>
                     </div>
                 </div>
             </div>
