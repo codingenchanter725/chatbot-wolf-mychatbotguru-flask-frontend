@@ -192,7 +192,7 @@ const selectFAQHandle = (fId) => {
 jQuery(document).ready(() => {
     try {
         // if (location.pathname.indexOf('afrilabs-admin') != -1) return;
-        // if (location.pathname.indexOf('afrilabs-admin') != -1) {
+        if (location.pathname.indexOf('afrilabs-admin') != -1) {
             jQuery('.welcome-container').removeClass('hidden');
             jQuery('.bot-container').attr("style", "top: unset!important")
             window.addEventListener("resize", () => {
@@ -207,7 +207,7 @@ jQuery(document).ready(() => {
                     jQuery('.bot-container').attr("style", "top: unset!important")
                 })
             });
-        // }
+        }
 
         (async () => {
             let sId = sessionId();
