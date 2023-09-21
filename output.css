@@ -1117,6 +1117,10 @@ input[type="range"]::-ms-fill-lower {
   height: 100%;
 }
 
+.max-h-\[20px\] {
+  max-height: 20px;
+}
+
 .w-1\/2 {
   width: 50%;
 }
@@ -1668,9 +1672,6 @@ input[type="range"]::-ms-fill-lower {
   top: unset !important;
   bottom: 40px !important;
   z-index: 120000;
-  --tw-shadow: 7px 7px 10px 0px #231F201C;
-  --tw-shadow-colored: 7px 7px 10px 0px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
 }
 
 .bot-admin-container {

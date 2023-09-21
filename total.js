@@ -48,6 +48,14 @@ const setSessionId = (sId) => {
     localStorage.setItem('session_id', sId);
 }
 
+const isTouchFAQ = () => {
+    let sId = localStorage.getItem("is_touch_faq");
+    return (!sId || sId == 'undefined' || sId == "") ? 0 : sId;
+}
+const touchFAQ = (state) => {
+    localStorage.setItem('is_touch_faq', state);
+}
+
 const toggleTextReadOnly = (val, is_user) => {
     if (val && !is_user) {
         jQuery('#text').attr('readOnly', val);
@@ -142,7 +150,7 @@ const sendHandle = async () => {
         }
         if (totalChat < 4) {
             jQuery('#chat-wrap').append(jQuery('.faq-section'));
-            jQuery('.faq-section').removeClass('hidden')
+            if (!isTouchFAQ()) jQuery('.faq-section').removeClass('hidden')
         }
     } catch (err) {
         console.log('sendhandle', err);
@@ -163,6 +171,8 @@ const downloadTranscript = async () => {
 const selectFAQHandle = (fId) => {
     let text = jQuery(`.faq_${fId}`).find('.left-message-text').text().trim();
     jQuery('#text').val(text);
+    touchFAQ(1);
+    jQuery('.faq-section').remove()
     sendHandle();
 }
 
@@ -244,7 +254,7 @@ jQuery(document).ready(() => {
                             scrollDown()
                         })
                     }
-                    jQuery('.faq-section').toggleClass('hidden');
+                    if (!isTouchFAQ()) jQuery('.faq-section').toggleClass('hidden');
                     scrollDown()
                 }
                 if (totalChat == 4) {
