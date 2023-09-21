@@ -70,17 +70,24 @@ let AIThinking = false, totalChat = 0;
 const sendHandle = async () => {
     try {
         if (jQuery('#text').attr('readOnly')) {
-
+            let first_name = jQuery('#firstname').val().trim();
+            let last_name = jQuery('#lastname').val().trim();
+            let email = jQuery('#email').val().trim();
+            let phone = jQuery('#phone').val().trim();
+            if (!first_name || !last_name || !email) {
+                alert("Please input the field exactly");
+                return;
+            }
             const axios = createAxiosInstance();
             let response = await axios.post(`/register`, {
-                'first_name': jQuery('#firstname').val(),
-                'last_name': jQuery('#lastname').val(),
-                'email': jQuery('#email').val(),
-                'phone': jQuery('#phone').val(),
+                'first_name': first_name,
+                'last_name': last_name,
+                'email': email,
+                'phone': phone,
                 'password': 'User$123',
                 'session_id': sessionId()
             });
-            if (response.data) {
+            if (response.data) {         
                 console.log('UserForm', response.data)
                 if (response.data.message === "Email is already taken") {
                     alert("Email is already taken")
@@ -89,6 +96,7 @@ const sendHandle = async () => {
                     jQuery('#text').attr('readOnly', false);
                 }
             }
+            scrollDown();
             return;
         }
 
@@ -138,22 +146,28 @@ const sendHandle = async () => {
             totalChat += 2;
         }
 
-        if (totalChat >= 4) {
-            jQuery('.faq-section').remove();
-            if (totalChat > 4) {
-                jQuery('.user-form').remove();
+        if (totalChat < 4) {
+            if (!isTouchFAQ()) {
+                jQuery('#chat-wrap').append(jQuery('.faq-section'));
             }
         }
         if (totalChat == 4) {
             /// user form handle
             toggleTextReadOnly(true)
         }
-        if (totalChat < 4) {
-            jQuery('#chat-wrap').append(jQuery('.faq-section'));
-            if (!isTouchFAQ()) jQuery('.faq-section').removeClass('hidden')
+        if (totalChat >= 4) {
+            jQuery('.faq-section').removeClass('hidden');
+            jQuery('.language-notice').append(jQuery('.faq-section'));
+            if (totalChat > 4) {
+                jQuery('.user-form').remove();
+            }
         }
+        scrollDown();
     } catch (err) {
         console.log('sendhandle', err);
+        if (err.response.data.message === "Email is already taken") {
+            alert("Email is already taken")
+        }
     }
 }
 
@@ -172,7 +186,6 @@ const selectFAQHandle = (fId) => {
     let text = jQuery(`.faq_${fId}`).find('.left-message-text').text().trim();
     jQuery('#text').val(text);
     touchFAQ(1);
-    jQuery('.faq-section').remove()
     sendHandle();
 }
 
@@ -231,32 +244,38 @@ jQuery(document).ready(() => {
                     scrollDown()
                 })
 
-                if (chats.length < 4) {
-                    jQuery('#chat-wrap').append(jQuery('.faq-section'));
-                    const faqResponse = await axios.get(`${BOT_API_BASE_URL}/faq/0`);
-                    if (faqResponse.data) {
-                        let faqDatas = faqResponse.data.data;
-                        faqDatas.map((item, index) => {
-                            let faq_row = `
-                                <div class="${'faq_' + item.id} ml-[72px]">
-                                    <span class="cursor-pointer" onclick="selectFAQHandle(${item.id})">
-                                        <div id="chat_${item.id}" class='left-message w-full flex mb-2.5 pr-8'>
-                                            <div class='flex items-start'>
-                                                <div class="left-message-text !border-primary border !rounded-none bg-white !mb-0 shadow-message rounded-r-lg rounded-tl-lg p-2.5">
-                                                    ${item.text}
-                                                </div>
+
+                // FAQ
+                jQuery('.faq-section').addClass('hidden');
+                const faqResponse = await axios.get(`${BOT_API_BASE_URL}/faq/0`);
+                if (faqResponse.data) {
+                    let faqDatas = faqResponse.data.data;
+                    faqDatas.map((item, index) => {
+                        let faq_row = `
+                            <div class="${'faq_' + item.id} ml-[72px]">
+                                <span class="cursor-pointer" onclick="selectFAQHandle(${item.id})">
+                                    <div id="chat_${item.id}" class='left-message w-full flex mb-2.5 pr-8'>
+                                        <div class='flex items-start'>
+                                            <div class="left-message-text !border-primary border !rounded-none bg-white !mb-0 shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+                                                ${item.text}
                                             </div>
                                         </div>
-                                    </span>
-                                </div>
-                            `;
-                            jQuery('.faq-section').append(faq_row)
-                            scrollDown()
-                        })
-                    }
-                    if (!isTouchFAQ()) jQuery('.faq-section').toggleClass('hidden');
-                    scrollDown()
+                                    </div>
+                                </span>
+                            </div>
+                        `;
+                        jQuery('.faq-section').append(faq_row)
+                    })
                 }
+
+                jQuery('.language-notice').append(jQuery('.faq-section'));
+                if (chats.length < 4) {
+                    if (!isTouchFAQ()) {
+                        jQuery('#chat-wrap').append(jQuery('.faq-section'));
+                    }
+                }
+                jQuery('.faq-section').removeClass('hidden');
+                scrollDown()
                 if (totalChat == 4) {
                     toggleTextReadOnly(true, response.data.user.email ? true : false)
                 }

@@ -10,6 +10,30 @@
     z-index: 120000;
 }
 
+.bot-container .language-box {
+    @apply w-[50px] h-[24px] pr-0 pl-[9px] py-0 text-primary border-primary text-xs
+}
+.bot-container .language-box option {
+    @apply bg-white text-black
+}
+.bot-container .language-box option:checked {
+    @apply bg-primary text-white
+}
+.bot-container .language-box:not([size]) {
+    background-image: url("data:image/svg+xml,%3csvg aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 10 6'%3e %3cpath stroke='%23F79052' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 4 4 4-4'/%3e %3c/svg%3e");
+    background-position: right 0.4rem center;
+}
+.bot-container .required-input  {
+    position: relative;
+}
+.bot-container .required-input::before  {
+    display: block;
+    content: "*";
+    right: 12px;
+    top: -3px;
+    @apply absolute text-red-700 font-bold text-lg;
+}
+
 .bot-admin-container {
     width: 100vw;
     height: calc(100vh - 73px);
