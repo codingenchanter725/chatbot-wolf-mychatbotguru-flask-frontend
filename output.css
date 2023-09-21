@@ -1745,6 +1745,10 @@ input[type="range"]::-ms-fill-lower {
   --scrollbar-width: 0.25rem;
 }
 
+.bot-admin-container pre, .bot-container pre {
+  white-space: pre-wrap;
+}
+
 .bot-admin-container img, .bot-container img {
   -webkit-user-select: none;
      -moz-user-select: none;

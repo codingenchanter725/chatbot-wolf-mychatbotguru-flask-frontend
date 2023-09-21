@@ -1,5 +1,5 @@
-// const BOT_API_BASE_URL = "https://34.30.137.2";
-const BOT_API_BASE_URL = "http://127.0.0.1:5000";
+const BOT_API_BASE_URL = "https://flash-backend.forillontech.com";
+// const BOT_API_BASE_URL = "http://127.0.0.1:5000";
 
 const createAxiosInstance = (config = {}) => {
     const instance = axios.create({
@@ -91,7 +91,7 @@ const sendHandle = async () => {
             <div class='chat_new_user message-row right-message w-full flex justify-end mb-2.5 pl-8'>
                 <div class='flex items-start'>
                     <div class="right-message-text bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
-                        ${text}
+                        <pre>${text}/pre>
                     </div>
                 </div>
             </div>
@@ -101,9 +101,9 @@ const sendHandle = async () => {
             <div class='chat_new_bot message-row left-message w-full flex mb-2.5 mr-8'>
                 <div class='flex items-start'>
                     <img class='w-10 h-10 mr-2' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
-                    <div
-                        class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
-                        <div class='flex items-center h-[24px] overflow-hidden'>
+                    <div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+                        <pre></pre>
+                        <div class='chat-loading flex items-center h-[24px] overflow-hidden'>
                             <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
                         </div>
                     </div>
@@ -123,8 +123,8 @@ const sendHandle = async () => {
             jQuery('.chat_new_user').addClass(`chat_${data.chat_id}`);
             jQuery('.chat_new_user').removeClass("chat_new_user");
             jQuery('.chat_new_bot').addClass(`chat_${data.bot_chat_id}`);
-            jQuery('.chat_new_bot').find('.left-message-text').html(data.text_ai);
-            jQuery('.chat_new_bot').find('.left-message-text img').remove();
+            jQuery('.chat_new_bot').find('.left-message-text pre').html(data.text_ai);
+            jQuery('.chat_new_bot').find('.left-message-text .chat-loading').remove();
             jQuery('.chat_new_bot').removeClass("chat_new_bot");
             scrollDown();
             totalChat += 2;
@@ -168,8 +168,8 @@ const selectFAQHandle = (fId) => {
 
 jQuery(document).ready(() => {
     try {
-        if (location.pathname.indexOf('afrilabs-admin') != -1) return;
-        // if (location.pathname.indexOf('afrilabs-admin') != -1) {
+        // if (location.pathname.indexOf('afrilabs-admin') != -1) return;
+        if (location.pathname.indexOf('afrilabs-admin') != -1) {
             jQuery('.welcome-container').removeClass('hidden');
             jQuery('.bot-container').attr("style", "top: unset!important")
             window.addEventListener("resize", () => {
@@ -184,7 +184,7 @@ jQuery(document).ready(() => {
                     jQuery('.bot-container').attr("style", "top: unset!important")
                 })
             });
-        // }
+        }
 
         (async () => {
             let sId = sessionId();
@@ -461,7 +461,7 @@ const sendAdminHandle = async () => {
                                 <label class="ml-2 leading-none text-[10px] text-white">${formatFileSize(file.size)}</label>
                                 <img class="tick-img hidden w-[10px] h-[10px] ml-1" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/tick.png" alt="tickImage" />
                             </div>
-                            <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
+                            <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
                     </div>
                 </div>
@@ -471,10 +471,11 @@ const sendAdminHandle = async () => {
                 <div class='chat_new_bot message-row right-message w-full flex justify-end mb-2.5 pl-8'>
                     <div class='flex items-start'>
                         <div class="right-message-text relative bg-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
-                            <div class='flex items-center h-[24px] overflow-hidden'>
+                            <pre></pre>
+                            <div class='chat-loading flex items-center h-[24px] overflow-hidden'>
                                 <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
                             </div>
-                            <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
+                            <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
                         <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                     </div>
@@ -506,12 +507,13 @@ const sendAdminHandle = async () => {
                 let data = response.data.data;
                 if (data.session_id) setSessionId(data.session_id);
                 jQuery('.chat_new_user').addClass(`chat_${data.chat_id}`);
+                jQuery('.chat_new_user').find(".delete-chat").attr("onclick", `deleteChatHandle(${data.chat_id})`);
                 jQuery('.chat_new_user').removeClass("chat_new_user");
-                jQuery('.chat_new_user').find(".delete-chat").attr("onclick", `delteChatHandle(${data.chat_id})`);
+
                 jQuery('.chat_new_bot').addClass(`chat_${data.bot_chat_id}`);
-                jQuery('.chat_new_bot').find(".delete-chat").attr("onclick", `delteChatHandle(${data.bot_chat_id})`);
-                jQuery('.chat_new_bot').find('.right-message-text').html(data.text_ai);
-                jQuery('.chat_new_bot').find('.right-message-text img').remove();
+                jQuery('.chat_new_bot').find(".delete-chat").attr("onclick", `deleteChatHandle(${data.bot_chat_id})`);
+                jQuery('.chat_new_bot').find('.right-message-text pre').html(data.text_ai);
+                jQuery('.chat_new_bot').find('.right-message-text .chat-loading').remove();
                 jQuery('.chat_new_bot').removeClass("chat_new_bot");
                 scrollDownAdmin();
                 totalChat += 2;
@@ -523,8 +525,9 @@ const sendAdminHandle = async () => {
                 <div class='chat_new_user message-row left-message w-full flex mb-2.5 mr-8'>
                     <div class='flex items-start'>
                         <div
-                            class="left-message-text bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+                            class="left-message-text relative bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
                             <pre>${text}</pre>
+                            <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
                     </div>
                 </div>
@@ -533,10 +536,12 @@ const sendAdminHandle = async () => {
             let bot_chat_row = `
                 <div class='chat_new_bot message-row right-message w-full flex justify-end mb-2.5 pl-8'>
                     <div class='flex items-start'>
-                        <div class="right-message-text bg-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
-                            <div class='flex items-center h-[24px] overflow-hidden'>
-                                <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09//loading-dots.gif" alt="loading" />
+                        <div class="right-message-text relative bg-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
+                            <pre></pre>
+                            <div class='chat-loading flex items-center h-[24px] overflow-hidden'>
+                                <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
                             </div>
+                            <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
                         <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                     </div>
@@ -553,10 +558,12 @@ const sendAdminHandle = async () => {
                 let data = response.data.data;
                 if (data.session_id) setSessionId(data.session_id);
                 jQuery('.chat_new_user').addClass(`chat_${data.chat_id}`);
+                jQuery('.chat_new_user').find(".delete-chat").attr("onclick", `deleteChatHandle(${data.chat_id})`);
                 jQuery('.chat_new_user').removeClass("chat_new_user");
                 jQuery('.chat_new_bot').addClass(`chat_${data.bot_chat_id}`);
-                jQuery('.chat_new_bot').find('.right-message-text').html(data.text_ai);
-                jQuery('.chat_new_bot').find('.right-message-text img').remove();
+                jQuery('.chat_new_bot').find(".delete-chat").attr("onclick", `deleteChatHandle(${data.bot_chat_id})`);
+                jQuery('.chat_new_bot').find('.right-message-text pre').html(data.text_ai);
+                jQuery('.chat_new_bot').find('.right-message-text .chat-loading').remove();
                 jQuery('.chat_new_bot').removeClass("chat_new_bot");
                 scrollDownAdmin();
                 totalChat += 2;
@@ -584,7 +591,7 @@ const downloadUserChatHistory = async (uId) => {
     location.href = BOT_API_BASE_URL + '/download/user/' + uId;
 }
 
-const delteChatHandle = async (cId) => {
+const deleteChatHandle = async (cId) => {
     try {
         const axios = createAxiosInstance();
         let response = await axios.delete('/chats/' + cId);
@@ -725,7 +732,7 @@ jQuery(document).ready(() => {
             const axios = createAxiosInstance();
             const response = await axios.get(`/chats/${sId}`);
             if (response.data) {
-                jQuery('.bot-admin-chat-wrap').find('.message-row ').remove();
+                jQuery('.bot-admin-chat-wrap').find('.message-row').remove();
 
                 let chats = response.data.data;
                 totalChat = chats.length;
@@ -746,7 +753,7 @@ jQuery(document).ready(() => {
                                             </div>
                                         ` : `<pre>${item.text}</pre>`}
 
-                                        <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
+                                        <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                                     </div>
                                 </div>
                             </div>
@@ -756,7 +763,7 @@ jQuery(document).ready(() => {
                                     <div
                                         class="right-message-text relative bg-white text-black shadow-message rounded-l-lg rounded-tr-lg p-2.5">
                                         <pre>${item.text}</pre>
-                                        <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="delteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
+                                        <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                                     </div>
                                     <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.png" alt="bot" />
                                 </div>

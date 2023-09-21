@@ -30,6 +30,10 @@
     @apply scrollbar scrollbar-w-1 scrollbar-thumb-primary scrollbar-track-gray-300
 }
 
+.bot-admin-container pre, .bot-container pre {
+    white-space: pre-wrap;
+}
+
 .bot-admin-container img, .bot-container img {
     user-select: none;
     -webkit-user-drag: none;
