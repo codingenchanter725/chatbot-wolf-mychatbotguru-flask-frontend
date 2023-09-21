@@ -881,6 +881,10 @@ input[type="range"]::-ms-fill-lower {
   top: -1.25rem;
 }
 
+.-top-\[42px\] {
+  top: -42px;
+}
+
 .bottom-\[6px\] {
   bottom: 6px;
 }
@@ -891,6 +895,10 @@ input[type="range"]::-ms-fill-lower {
 
 .left-4 {
   left: 1rem;
+}
+
+.left-\[20px\] {
+  left: 20px;
 }
 
 .right-4 {
@@ -1111,6 +1119,10 @@ input[type="range"]::-ms-fill-lower {
 
 .h-\[calc\(100\%_-_80px\)\] {
   height: calc(100% - 80px);
+}
+
+.h-\[calc\(100\%_-_82px\)\] {
+  height: calc(100% - 82px);
 }
 
 .h-full {
@@ -1358,6 +1370,10 @@ input[type="range"]::-ms-fill-lower {
 
 .rounded-tr-lg {
   border-top-right-radius: 0.5rem;
+}
+
+.\!border {
+  border-width: 1px !important;
 }
 
 .border {
