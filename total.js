@@ -56,20 +56,31 @@ const touchFAQ = (state) => {
     localStorage.setItem('is_touch_faq', state);
 }
 
-const toggleTextReadOnly = (val, is_user) => {
-    if (val && !is_user) {
-        jQuery('#text').attr('readOnly', val);
-        console.log(is_user)
-        jQuery('#chat-wrap').append(jQuery('.user-form'));
-        jQuery('.user-form').removeClass('hidden')
+const handleShowUserForm = (val) => {
+    if (totalChat < 4) {
+        jQuery('.user-form').addClass('hidden')
+    } else if (totalChat == 4) {
+        if (userEmail) {
+            jQuery('.user-form').addClass('hidden')
+        } else {
+            jQuery('#chat-wrap').append(jQuery('.user-form'));
+            jQuery('.user-form').removeClass('hidden')
+        }
+    } else {
+        if (userEmail) {
+            jQuery('.user-form').addClass('hidden')
+        } else {
+            jQuery(jQuery('#chat-wrap').find(">.message-row")[3]).after(jQuery('.user-form'));
+            jQuery('.user-form').removeClass('hidden');
+        }
     }
 }
 
-let AIThinking = false, totalChat = 0;
+let AIThinking = false, totalChat = 0, userEmail = "";
 
-const sendHandle = async () => {
+const sendHandle = async (isSubmit = false) => {
     try {
-        if (jQuery('#text').attr('readOnly')) {
+        if (isSubmit) {
             let first_name = jQuery('#firstname').val().trim();
             let last_name = jQuery('#lastname').val().trim();
             let email = jQuery('#email').val().trim();
@@ -87,13 +98,12 @@ const sendHandle = async () => {
                 'password': 'User$123',
                 'session_id': sessionId()
             });
-            if (response.data) {         
+            if (response.data) {
                 console.log('UserForm', response.data)
                 if (response.data.message === "Email is already taken") {
                     alert("Email is already taken")
                 } else {
                     jQuery('.user-form').addClass('hidden')
-                    jQuery('#text').attr('readOnly', false);
                 }
             }
             scrollDown();
@@ -151,16 +161,12 @@ const sendHandle = async () => {
                 jQuery('#chat-wrap').append(jQuery('.faq-section'));
             }
         }
-        if (totalChat == 4) {
-            /// user form handle
-            toggleTextReadOnly(true)
-        }
+
+        handleShowUserForm()
+
         if (totalChat >= 4) {
             jQuery('.faq-section').removeClass('hidden');
             jQuery('.language-notice').append(jQuery('.faq-section'));
-            if (totalChat > 4) {
-                jQuery('.user-form').remove();
-            }
         }
         scrollDown();
     } catch (err) {
@@ -192,22 +198,22 @@ const selectFAQHandle = (fId) => {
 jQuery(document).ready(() => {
     try {
         // if (location.pathname.indexOf('afrilabs-admin') != -1) return;
-        if (location.pathname.indexOf('afrilabs-admin') != -1) {
-            jQuery('.welcome-container').removeClass('hidden');
-            jQuery('.bot-container').attr("style", "top: unset!important")
-            window.addEventListener("resize", () => {
+        // if (location.pathname.indexOf('afrilabs-admin') != -1) {
+        jQuery('.welcome-container').removeClass('hidden');
+        jQuery('.bot-container').attr("style", "top: unset!important")
+        window.addEventListener("resize", () => {
+            jQuery('.bot-container').attr("style", "top: unset!important");
+            setTimeout(() => {
                 jQuery('.bot-container').attr("style", "top: unset!important");
-                setTimeout(() => {
-                    jQuery('.bot-container').attr("style", "top: unset!important");
-                })
-            });
-            window.addEventListener("scroll", () => {
+            })
+        });
+        window.addEventListener("scroll", () => {
+            jQuery('.bot-container').attr("style", "top: unset!important")
+            setTimeout(() => {
                 jQuery('.bot-container').attr("style", "top: unset!important")
-                setTimeout(() => {
-                    jQuery('.bot-container').attr("style", "top: unset!important")
-                })
-            });
-        }
+            })
+        });
+        // }
 
         (async () => {
             let sId = sessionId();
@@ -215,6 +221,7 @@ jQuery(document).ready(() => {
             const response = await axios.get(`/chats/${sId}`);
             if (response.data) {
                 jQuery('#chat-wrap').find('.message-row ').remove();
+                userEmail = response.data.user.email ? true : false;
 
                 let chats = response.data.data;
                 totalChat = chats.length;
@@ -269,6 +276,7 @@ jQuery(document).ready(() => {
                 }
 
                 jQuery('.language-notice').append(jQuery('.faq-section'));
+                jQuery('.faq-section').append(jQuery('.notice-fr'));
                 if (chats.length < 4) {
                     if (!isTouchFAQ()) {
                         jQuery('#chat-wrap').append(jQuery('.faq-section'));
@@ -276,9 +284,8 @@ jQuery(document).ready(() => {
                 }
                 jQuery('.faq-section').removeClass('hidden');
                 scrollDown()
-                if (totalChat == 4) {
-                    toggleTextReadOnly(true, response.data.user.email ? true : false)
-                }
+
+                handleShowUserForm()
             }
         })()
     } catch (err) {
@@ -639,8 +646,8 @@ const updateAnalysis = async () => {
         let start_time = jQuery("#start_date").val();
         let end_time = jQuery("#end_date").val();
         console.log(start_time, end_time);
-        if (start_time) start_time =  "&start_time=" + new Date(start_time).getTime() / 1000;
-        if (end_time) end_time =  "&end_time=" + new Date(end_time).getTime() / 1000;
+        if (start_time) start_time = "&start_time=" + new Date(start_time).getTime() / 1000;
+        if (end_time) end_time = "&end_time=" + new Date(end_time).getTime() / 1000;
         console.log(start_time, end_time);
         let response = await axios.get(`/admin?$${start_time}${end_time}`)
         if (response.data) {
@@ -653,7 +660,7 @@ const updateAnalysis = async () => {
             jQuery('#maxChatCountByOneUser').html(data.max_chat_count_by_one_user);
             jQuery('#totalDownloadCount').html(data.total_download_count);
 
-            
+
             jQuery('.bot-admin-content-container').removeClass('hidden');
             jQuery('.bot-admin-login-container').addClass('hidden');
         }
@@ -662,6 +669,10 @@ const updateAnalysis = async () => {
         jQuery('.bot-admin-content-container').addClass('hidden');
         jQuery('.bot-admin-login-container').removeClass('hidden');
     }
+}
+
+const downloadUserList = async () => {
+    location.href = BOT_API_BASE_URL + '/download/user/list';
 }
 
 jQuery(document).ready(() => {
@@ -684,7 +695,7 @@ jQuery(document).ready(() => {
                     jQuery('.admin-faq-section').append('<li class="text-lg mt-2">There is nothing yet</li>');
                 }
             }
-        } catch(err) {
+        } catch (err) {
             console.log(err);
         }
 
