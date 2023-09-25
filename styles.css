@@ -10,6 +10,18 @@
     z-index: 120000;
 }
 
+@media only screen and (max-width: 768px) {
+    .bot-container {
+        right: 0px !important;
+        bottom: 0px !important;
+    }
+
+    .chat-container {
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+}
+
 .bot-container .language-box {
     @apply w-[50px] h-[24px] pr-0 pl-[9px] py-0 text-primary border-primary text-xs
 }

@@ -893,12 +893,20 @@ input[type="range"]::-ms-fill-lower {
   left: 1rem;
 }
 
+.right-0 {
+  right: 0px;
+}
+
 .right-4 {
   right: 1rem;
 }
 
 .top-0 {
   top: 0px;
+}
+
+.top-\[40px\] {
+  top: 40px;
 }
 
 .\!mb-0 {
@@ -1099,10 +1107,6 @@ input[type="range"]::-ms-fill-lower {
 
 .h-\[calc\(100\%_-_120px\)\] {
   height: calc(100% - 120px);
-}
-
-.h-\[calc\(100\%_-_42px\)\] {
-  height: calc(100% - 42px);
 }
 
 .h-\[calc\(100\%_-_50px\)\] {
@@ -1560,6 +1564,11 @@ input[type="range"]::-ms-fill-lower {
   line-height: 1.75rem;
 }
 
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
 .font-medium {
   font-weight: 500;
 }
@@ -1583,6 +1592,11 @@ input[type="range"]::-ms-fill-lower {
 .text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
+}
+
+.text-gray-500 {
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
 }
 
 .text-label {
@@ -1688,6 +1702,18 @@ input[type="range"]::-ms-fill-lower {
   top: unset !important;
   bottom: 40px !important;
   z-index: 120000;
+}
+
+@media only screen and (max-width: 768px) {
+  .bot-container {
+    right: 0px !important;
+    bottom: 0px !important;
+  }
+
+  .chat-container {
+    width: 100vw !important;
+    height: 100vh !important;
+  }
 }
 
 .bot-container .language-box {
