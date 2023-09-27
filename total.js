@@ -126,7 +126,7 @@ const sendHandle = async (isSubmit = false) => {
         let bot_chat_row = `
             <div class='chat_new_bot message-row left-message w-full flex mb-2.5 mr-8'>
                 <div class='flex items-start'>
-                    <img class='w-10 h-10 mr-2' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot1.png" alt="bot" />
+                    <img class='w-10 h-10 mr-2 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                     <div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
                         <pre></pre>
                         <div class='chat-loading flex items-center h-[24px] overflow-hidden'>
@@ -230,7 +230,7 @@ jQuery(document).ready(() => {
                         ${item.is_bot ? `
                             <div class='chat_${item.id} message-row left-message w-full flex mb-2.5 pr-8'>
                                 <div class='flex items-start'>
-                                    <img class='w-10 h-10 mr-2' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot1.png" alt="bot" />
+                                    <img class='w-10 h-10 mr-2 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                                     <div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
                                         <pre>${item.text}</pre>
                                     </div>
@@ -513,7 +513,7 @@ const sendAdminHandle = async () => {
                             </div>
                             <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
-                        <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot1.png" alt="bot" />
+                        <img class='w-12 h-12 ml-4 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                     </div>
                 </div>
             `;
@@ -579,7 +579,7 @@ const sendAdminHandle = async () => {
                             </div>
                             <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
-                        <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot1.png" alt="bot" />
+                        <img class='w-12 h-12 ml-4 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                     </div>
                 </div>
             `;
@@ -805,7 +805,7 @@ jQuery(document).ready(() => {
                                         <pre>${item.text}</pre>
                                         <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                                     </div>
-                                    <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot1.png" alt="bot" />
+                                    <img class='w-12 h-12 ml-4 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                                 </div>
                             </div>
                         `}

@@ -232,7 +232,7 @@ const sendAdminHandle = async () => {
                                 <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
                             </div>
                         </div>
-                        <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot1.png" alt="bot" />
+                        <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                     </div>
                 </div>
             `;
@@ -290,7 +290,7 @@ const sendAdminHandle = async () => {
                                 <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09//loading-dots.gif" alt="loading" />
                             </div>
                         </div>
-                        <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot1.png" alt="bot" />
+                        <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                     </div>
                 </div>
             `;
@@ -478,7 +478,7 @@ jQuery(document).ready(() => {
                                         class="right-message-text bg-white text-black shadow-message rounded-l-lg rounded-tr-lg p-2.5">
                                         ${item.text}
                                     </div>
-                                    <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot1.png" alt="bot" />
+                                    <img class='w-12 h-12 ml-4' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                                 </div>
                             </div>
                         `}

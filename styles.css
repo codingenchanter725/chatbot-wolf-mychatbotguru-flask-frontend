@@ -7,7 +7,7 @@
     right: 40px !important;
     top: unset !important;
     bottom: 40px !important;
-    z-index: 120000;
+    z-index: 1100000;
 }
 
 @media only screen and (max-width: 768px) {
@@ -52,7 +52,7 @@
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 110000;
+    z-index: 1100000;
 }
 
 
