@@ -1,5 +1,5 @@
-const BOT_API_BASE_URL = "https://flash-backend.forillontech.com";
-// const BOT_API_BASE_URL = "http://127.0.0.1:5000";
+// const BOT_API_BASE_URL = "https://flash-backend.forillontech.com";
+const BOT_API_BASE_URL = "http://127.0.0.1:5000";
 
 const createAxiosInstance = (config = {}) => {
     const instance = axios.create({
@@ -21,9 +21,9 @@ const goChathandle = () => {
     jQuery('.chat-container').removeClass("hidden")
 }
 
-const closeWindow = () => {
-    jQuery('.chat-container').addClass("hidden")
-    jQuery('.welcome-container').removeClass("hidden")
+const restartChatHandle = async () => {
+    setSessionId("")
+    location.reload();
 }
 
 const changeSizeWindows = () => {
@@ -48,133 +48,193 @@ const setSessionId = (sId) => {
     localStorage.setItem('session_id', sId);
 }
 
-const isTouchFAQ = () => {
-    let sId = localStorage.getItem("is_touch_faq");
-    return (!sId || sId == 'undefined' || sId == "") ? 0 : sId;
-}
-const touchFAQ = (state) => {
-    localStorage.setItem('is_touch_faq', state);
-}
-
-const handleShowUserForm = (val) => {
-    if (totalChat < 4) {
-        jQuery('.user-form').addClass('hidden')
-    } else if (totalChat == 4) {
-        if (userEmail) {
-            jQuery('.user-form').addClass('hidden')
-        } else {
-            jQuery('#chat-wrap').append(jQuery('.user-form'));
-            jQuery('.user-form').removeClass('hidden')
-        }
-    } else {
-        if (userEmail) {
-            jQuery('.user-form').addClass('hidden')
-        } else {
-            jQuery(jQuery('#chat-wrap').find(">.message-row")[3]).after(jQuery('.user-form'));
-            jQuery('.user-form').removeClass('hidden');
-        }
-    }
-}
-
 let AIThinking = false, totalChat = 0, userEmail = "";
 
-const sendHandle = async (isSubmit = false) => {
+const sendHandle = async () => {
+    let text = jQuery('#text').val();
     try {
-        if (isSubmit) {
-            let first_name = jQuery('#firstname').val().trim();
-            let last_name = jQuery('#lastname').val().trim();
-            let email = jQuery('#email').val().trim();
-            let phone = jQuery('#phone').val().trim();
-            if (!first_name || !last_name || !email) {
-                alert("Please input the field exactly");
-                return;
-            }
-            const axios = createAxiosInstance();
-            let response = await axios.post(`/register`, {
-                'first_name': first_name,
-                'last_name': last_name,
-                'email': email,
-                'phone': phone,
-                'password': 'User$123',
-                'session_id': sessionId()
-            });
-            if (response.data) {
-                console.log('UserForm', response.data)
-                if (response.data.message === "Email is already taken") {
-                    alert("Email is already taken")
-                } else {
-                    jQuery('.user-form').addClass('hidden')
-                }
-            }
-            scrollDown();
-            return;
-        }
-
-        let text = jQuery("#text").val().trim();
-        if (!text) return;
-        clearText();
-        let user_chat_row = `
-            <div class='chat_new_user message-row right-message w-full flex justify-end mb-2.5 pl-8'>
-                <div class='flex items-start'>
-                    <div class="right-message-text bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
-                        <pre>${text}</pre>
-                    </div>
-                </div>
-            </div>
-        `;
-        jQuery('#chat-wrap').append(user_chat_row);
-        let bot_chat_row = `
-            <div class='chat_new_bot message-row left-message w-full flex mb-2.5 mr-8'>
-                <div class='flex items-start'>
-                    <img class='w-10 h-10 mr-2 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
-                    <div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
-                        <pre></pre>
-                        <div class='chat-loading flex items-center h-[24px] overflow-hidden'>
-                            <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
+        if (file) {
+            if (!fileValidate(file)) return;
+            data = new FormData();
+            data.append('file', file);
+            data.append('text', text);
+            config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Set the content type
+                },
+            };
+            let user_chat_row = `
+                <div class='chat_new_user message-row right-message w-full flex justify-end mb-2.5 pl-8'>
+                    <div class='flex items-start'>
+                        <div class="right-message-text relative bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
+                            <p class="mb-2"><pre>${text}</pre></p>
+                            <img class="w-[20px] h-[20px]" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/attachment.png" alt="attachmentImage" />
+                            <div class="flex items-center justify-end mt-1">
+                                <div class="progress-container w-[80px] h-[6px] p-[1px] bg-progress-bar">
+                                    <div class="w-[0px] progress-percent h-1 bg-green">
+                                    </div>
+                                </div>
+                                <label class="ml-2 leading-none text-[10px] text-white">${formatFileSize(file.size)}</label>
+                                <img class="tick-img hidden w-[10px] h-[10px] ml-1" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/tick.png" alt="tickImage" />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
-        jQuery('#chat-wrap').append(bot_chat_row);
-        scrollDown();
-        let sId = sessionId();
-        const axios = createAxiosInstance();
-        let response = await axios.post(`/chats/${sId}`, {
-            text: text
-        });
-        if (response.data) {
-            let data = response.data.data;
-            if (data.session_id) setSessionId(data.session_id);
-            jQuery('.chat_new_user').addClass(`chat_${data.chat_id}`);
-            jQuery('.chat_new_user').removeClass("chat_new_user");
-            jQuery('.chat_new_bot').addClass(`chat_${data.bot_chat_id}`);
-            jQuery('.chat_new_bot').find('.left-message-text pre').html(data.text_ai);
-            jQuery('.chat_new_bot').find('.left-message-text .chat-loading').remove();
-            jQuery('.chat_new_bot').removeClass("chat_new_bot");
+            `;
+            jQuery('#chat-wrap').append(user_chat_row);
+            let bot_chat_row = `
+                <div class='chat_new_bot message-row left-message w-full flex mb-2.5 mr-8'>
+                    <div class='flex items-start'>
+                        <img class='w-10 h-10 mr-2 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
+                        <div class="left-message-text relative shadow-message bg-white rounded-r-lg rounded-tl-lg p-2.5">
+                            <pre></pre>
+                            <div class='chat-loading flex items-center h-[24px] overflow-hidden'>
+                                <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            jQuery('#chat-wrap').append(bot_chat_row);
             scrollDown();
-            totalChat += 2;
-        }
+            let sId = sessionId();
+            console.log(sId);
+            const axios = createAxiosInstance();
+            let response = await axios.post(`/chats/${sId}`, data, {
+                ...config,
+                onUploadProgress: progressEvent => {
+                    const loaded = progressEvent.loaded;
+                    const total = progressEvent.total ? progressEvent.total : 1;
+                    const progress = Math.round((loaded / total) * 100);
+                    if (progress == 100) {
+                        jQuery('.chat_new_user').find('.progress-container').remove();
+                        jQuery('.chat_new_user').find('.tick-img').removeClass('hidden');
+                        jQuery('.imported_file_name').text("");
+                        file = "";
+                        jQuery('#file_import').val("");
+                    } else {
+                        jQuery('.chat_new_user').find('.progress-percent')[0].style.width = progress + '%';
+                    }
+                },
+            });
+            if (response.data) {
+                let data = response.data.data;
+                if (data.session_id) setSessionId(data.session_id);
+                jQuery('.chat_new_user').addClass(`chat_${data.chat_id}`);
+                jQuery('.chat_new_user').removeClass("chat_new_user");
 
-        if (totalChat < 4) {
-            if (!isTouchFAQ()) {
-                jQuery('#chat-wrap').append(jQuery('.faq-section'));
+                jQuery('.chat_new_bot').addClass(`chat_${data.bot_chat_id}`);
+                jQuery('.chat_new_bot').find('.left-message-text pre').html(data.text_ai);
+                jQuery('.chat_new_bot').find('.left-message-text .chat-loading').remove();
+                jQuery('.chat_new_bot').removeClass("chat_new_bot");
+                scrollDown();
+                totalChat += 2;
+            }
+        } else {
+            if (!text) return;
+            jQuery('#text').val("");
+            let user_chat_row = `
+                <div class='chat_new_user message-row right-message w-full flex justify-end mb-2.5 pl-8'>
+                    <div class='flex items-start'>
+                        <div class="right-message-text relative bg-secondary text-white  shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
+                            <pre>${text}</pre>
+                        </div>
+                    </div>
+                </div>
+            `;
+            jQuery('#chat-wrap').append(user_chat_row);
+            let bot_chat_row = `
+                <div class='chat_new_bot message-row left-message w-full flex mb-2.5 mr-8'>
+                    <div class='flex items-start'>
+                        <img class='w-10 h-10 mr-2 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
+                        <div class="left-message-text relative bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+                            <pre></pre>
+                            <div class='chat-loading flex items-center h-[24px] overflow-hidden'>
+                                <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            jQuery('#chat-wrap').append(bot_chat_row);
+            scrollDown();
+            let sId = sessionId();
+            const axios = createAxiosInstance();
+            let response = await axios.post(`/chats/${sId}`, {
+                text: text
+            });
+            if (response.data) {
+                let data = response.data.data;
+                if (data.session_id) setSessionId(data.session_id);
+                jQuery('.chat_new_user').addClass(`chat_${data.chat_id}`);
+                jQuery('.chat_new_user').removeClass("chat_new_user");
+                jQuery('.chat_new_bot').addClass(`chat_${data.bot_chat_id}`);
+                jQuery('.chat_new_bot').find('.left-message-text pre').html(data.text_ai);
+                jQuery('.chat_new_bot').find('.left-message-text .chat-loading').remove();
+                jQuery('.chat_new_bot').removeClass("chat_new_bot");
+                scrollDown();
+                totalChat += 2;
             }
         }
-
-        handleShowUserForm()
-
-        if (totalChat >= 4) {
-            jQuery('.faq-section').removeClass('hidden');
-            jQuery('.language-notice').append(jQuery('.faq-section'));
-        }
-        scrollDown();
-    } catch (err) {
-        console.log('sendhandle', err);
-        if (err.response.data.message === "Email is already taken") {
-            alert("Email is already taken")
-        }
+    } catch (error) {
+        console.log(error)
     }
+}
+
+const sendHandle1 = async (isSubmit = false) => {
+    // try {
+    //     let text = jQuery("#text").val().trim();
+    //     if (!text) return;
+    //     clearText();
+    //     let user_chat_row = `
+    //         <div class='chat_new_user message-row right-message w-full flex justify-end mb-2.5 pl-8'>
+    //             <div class='flex items-start'>
+    //                 <div class="right-message-text bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
+    //                     <pre>${text}</pre>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     `;
+    //     jQuery('#chat-wrap').append(user_chat_row);
+    //     let bot_chat_row = `
+    //         <div class='chat_new_bot message-row left-message w-full flex mb-2.5 mr-8'>
+    //             <div class='flex items-start'>
+    //                 <img class='w-10 h-10 mr-2 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
+    //                 <div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+    //                     <pre></pre>
+    //                     <div class='chat-loading flex items-center h-[24px] overflow-hidden'>
+    //                         <img class='w-[48px] h-[48px]' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/loading-dots.gif" alt="loading" />
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     `;
+    //     jQuery('#chat-wrap').append(bot_chat_row);
+    //     scrollDown();
+    //     let sId = sessionId();
+    //     const axios = createAxiosInstance();
+    //     let response = await axios.post(`/chats/${sId}`, {
+    //         text: text
+    //     });
+    //     if (response.data) {
+    //         let data = response.data.data;
+    //         if (data.session_id) setSessionId(data.session_id);
+    //         jQuery('.chat_new_user').addClass(`chat_${data.chat_id}`);
+    //         jQuery('.chat_new_user').removeClass("chat_new_user");
+    //         jQuery('.chat_new_bot').addClass(`chat_${data.bot_chat_id}`);
+    //         jQuery('.chat_new_bot').find('.left-message-text pre').html(data.text_ai);
+    //         jQuery('.chat_new_bot').find('.left-message-text .chat-loading').remove();
+    //         jQuery('.chat_new_bot').removeClass("chat_new_bot");
+    //         scrollDown();
+    //         totalChat += 2;
+    //     }
+    //     scrollDown();
+    // } catch (err) {
+    //     console.log('sendhandle', err);
+    //     if (err.response.data.message === "Email is already taken") {
+    //         alert("Email is already taken")
+    //     }
+    // }
 }
 
 const handleKeydown = (e) => {
@@ -183,38 +243,8 @@ const handleKeydown = (e) => {
     }
 }
 
-const downloadTranscript = async () => {
-    let session_id = sessionId();
-    location.href = BOT_API_BASE_URL + '/download/transcript/' + session_id;
-}
-
-const selectFAQHandle = (fId) => {
-    let text = jQuery(`.faq_${fId}`).find('.left-message-text').text().trim();
-    jQuery('#text').val(text);
-    touchFAQ(1);
-    sendHandle();
-}
-
 jQuery(document).ready(() => {
     try {
-        // if (location.pathname.indexOf('afrilabs-admin') != -1) return;
-        // if (location.pathname.indexOf('afrilabs-admin') != -1) {
-            jQuery('.welcome-container').removeClass('hidden');
-            jQuery('.bot-container').attr("style", "top: unset!important")
-            window.addEventListener("resize", () => {
-                jQuery('.bot-container').attr("style", "top: unset!important");
-                setTimeout(() => {
-                    jQuery('.bot-container').attr("style", "top: unset!important");
-                })
-            });
-            window.addEventListener("scroll", () => {
-                jQuery('.bot-container').attr("style", "top: unset!important")
-                setTimeout(() => {
-                    jQuery('.bot-container').attr("style", "top: unset!important")
-                })
-            });
-        // }
-
         (async () => {
             let sId = sessionId();
             const axios = createAxiosInstance();
@@ -241,7 +271,16 @@ jQuery(document).ready(() => {
                                 <div class='flex items-start'>
                                     <div
                                         class="right-message-text bg-secondary text-white shadow-message rounded-l-lg rounded-tr-lg p-2.5 ">
-                                        <pre>${item.text}</pre>
+
+                                        ${item.file ? `
+                                            <p class="mb-2"><pre>${item.text}</pre></p>
+                                            <img class="w-[20px] h-[20px]" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/attachment.png" alt="attachmentImage" />
+                                            <div class="flex items-center justify-end mt-1">
+                                                <label class="ml-2 leading-none text-[10px] text-white">${formatFileSize(item.file.size)}</label>
+                                                <img class="w-[10px] h-[10px] ml-1" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/tick.png" alt="tickImage" />
+                                            </div>
+                                        ` : `<pre>${item.text}</pre>`}
+
                                     </div>
                                 </div>
                             </div>
@@ -250,42 +289,6 @@ jQuery(document).ready(() => {
                     jQuery('#chat-wrap').append(chat_row);
                     scrollDown()
                 })
-
-
-                // FAQ
-                jQuery('.faq-section').addClass('hidden');
-                const faqResponse = await axios.get(`${BOT_API_BASE_URL}/faq/0`);
-                if (faqResponse.data) {
-                    let faqDatas = faqResponse.data.data;
-                    faqDatas.map((item, index) => {
-                        let faq_row = `
-                            <div class="${'faq_' + item.id} ml-[72px]">
-                                <span class="cursor-pointer" onclick="selectFAQHandle(${item.id})">
-                                    <div id="chat_${item.id}" class='left-message w-full flex mb-2.5 pr-8'>
-                                        <div class='flex items-start'>
-                                            <div class="left-message-text !border-primary !border !rounded-none bg-white !mb-0 shadow-message rounded-r-lg rounded-tl-lg p-2.5">
-                                                ${item.text}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </span>
-                            </div>
-                        `;
-                        jQuery('.faq-section').append(faq_row)
-                    })
-                }
-
-                jQuery('.language-notice').append(jQuery('.faq-section'));
-                jQuery('.faq-section').append(jQuery('.notice-fr'));
-                if (chats.length < 4) {
-                    if (!isTouchFAQ()) {
-                        jQuery('#chat-wrap').append(jQuery('.faq-section'));
-                    }
-                }
-                jQuery('.faq-section').removeClass('hidden');
-                scrollDown()
-
-                handleShowUserForm()
             }
         })()
     } catch (err) {
@@ -301,25 +304,6 @@ jQuery(document).ready(() => {
 
 
 // -------------------------------------------------------------------------------- bot-admin ============================================================
-const adminLoginHandle = async () => {
-    let email = jQuery("#admin-bot-email").val();
-    let password = jQuery("#admin-bot-password").val();
-    const axios = createAxiosInstance();
-    let response = await axios.post(`/admin/login`, {
-        email: email,
-        password: password
-    });
-    if (response.data) {
-        if (response.data.token) {
-            localStorage.setItem("accessToken", response.data.token);
-            localStorage.setItem("session_id", response.data.session_id);
-            jQuery('.bot-admin-login-container').addClass('hidden');
-            jQuery('.bot-admin-content-container').removeClass('hidden');
-            location.reload();
-        }
-    }
-}
-
 const adminMenuSelect = (section) => {
     jQuery('.admin-bot-menu.active').removeClass("active");
     jQuery(`.admin-bot-menu.${section}-menu`).addClass("active");
@@ -365,80 +349,6 @@ function formatFileSize(sizeInBytes) {
     return `${formattedSize} ${units[digitGroups]}`;
 }
 
-const editFaqHandle = (fId) => {
-    console.log(fId)
-    jQuery(`.faq-${fId}`).find('input').attr('readOnly', false);
-    jQuery(`.faq-${fId}`).find('.faq-edit').addClass('hidden');
-    jQuery(`.faq-${fId}`).find('.faq-save').removeClass('hidden');
-}
-
-const saveFaqHandle = async (fId) => {
-    console.log(fId)
-    const axios = createAxiosInstance();
-    let text = jQuery(`.faq-${fId}`).find('input').val();
-    try {
-        let response = await axios.post('/faq/' + fId, {
-            text: text
-        })
-        if (response.data) {
-            jQuery(`.faq-${fId}`).find('input').attr('readOnly', true);
-            jQuery(`.faq-${fId}`).find('.faq-edit').removeClass('hidden');
-            jQuery(`.faq-${fId}`).find('.faq-save').addClass('hidden');
-            if (fId == '0' || fId == 0) {
-                jQuery(`.faq-0`).addClass(`faq-${response.data.faq_id}`);
-                jQuery(`.faq-0`).find('.faq-edit').attr('onclick', `editFaqHandle(${response.data.faq_id})`);
-                jQuery(`.faq-0`).find('.faq-save').attr('onclick', `saveFaqHandle(${response.data.faq_id})`);
-                jQuery(`.faq-0`).find('.faq-delete').attr('onclick', `deleteFaqHandle(${response.data.faq_id})`);
-                jQuery(`.faq-0`).removeClass('faq-0');
-            }
-        }
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-const deleteFaqHandle = async (fId) => {
-    console.log(fId)
-    try {
-        const axios = createAxiosInstance();
-        let response = await axios.delete('/faq/' + fId);
-        if (response.data) {
-            jQuery(`.faq-${fId}`).remove();
-        }
-        return false
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-const addFaqHandle = () => {
-    console.log('here');
-    let userRow = `
-        <div class="faq-row faq-0 w-full flex items-center bg-white mb-4">
-            <div class="w-full relative flex items-center">
-                <input class='w-full px-4 py-2 border text-lg border-border focus:border-border rounded mr-2' value='' placeholder='' />
-            </div>
-            <div class='flex items-center'>
-                <button onclick="saveFaqHandle(0)"
-                    class="faq-save w-[26px] h-[26px] flex items-center justify-center ml-6">
-                    <img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/save.png"
-                        alt="saveImage" />
-                </button>
-                <button onclick="editFaqHandle(0)"
-                    class="faq-edit w-[24px] h-[24px] flex items-center justify-center ml-6 hidden">
-                    <img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/edit.png"
-                        alt="editImage" />
-                </button>
-                <button onclick="deleteFaqHandle(0)"
-                    class="faq-delete w-[28px] h-[28px] flex items-center justify-center ml-6">
-                    <img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png"
-                        alt="deleteImage" />
-                </button>
-            </div>
-        </div>
-    `;
-    jQuery('.bot-admin-faq-section').append(userRow);
-}
 const scrollDownAdmin = () => {
     jQuery('.bot-admin-chat-wrap')[0].scrollTop = 10000000000;
 }
@@ -456,7 +366,6 @@ const isValidFileType = (type) => {
     }
 }
 
-
 const fileValidate = (f) => {
     console.log(f);
     if (f.size > 1024 * 1024 * 100) {
@@ -467,7 +376,7 @@ const fileValidate = (f) => {
     return true;
 }
 
-let file;
+let file, lastUpdatedTime = Date.now();
 
 const sendAdminHandle = async () => {
     let text = jQuery('#admin-text').val();
@@ -513,7 +422,7 @@ const sendAdminHandle = async () => {
                             </div>
                             <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
-                        <img class='w-12 h-12 ml-4 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
+                        <img class='w-12 h-12 ml-6 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                     </div>
                 </div>
             `;
@@ -522,7 +431,7 @@ const sendAdminHandle = async () => {
             let sId = sessionId();
             console.log(sId);
             const axios = createAxiosInstance();
-            let response = await axios.post(`/chats/${sId}`, data, {
+            let response = await axios.post(`/chats/${sId}?is_admin=1`, data, {
                 ...config,
                 onUploadProgress: progressEvent => {
                     const loaded = progressEvent.loaded;
@@ -579,7 +488,7 @@ const sendAdminHandle = async () => {
                             </div>
                             <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(0)"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                         </div>
-                        <img class='w-12 h-12 ml-4 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
+                        <img class='w-12 h-12 ml-6 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                     </div>
                 </div>
             `;
@@ -587,7 +496,7 @@ const sendAdminHandle = async () => {
             scrollDownAdmin();
             let sId = sessionId();
             const axios = createAxiosInstance();
-            let response = await axios.post(`/chats/${sId}`, {
+            let response = await axios.post(`/chats/${sId}?is_admin=1`, {
                 text: text
             });
             if (response.data) {
@@ -610,7 +519,6 @@ const sendAdminHandle = async () => {
     }
 }
 
-
 const handleAdminKeydown = (e) => {
     if (e.code == "Enter") {
         sendAdminHandle();
@@ -620,11 +528,6 @@ const handleAdminKeydown = (e) => {
 const fileChangeHandle = (e) => {
     file = e.target.files[0];
     jQuery('.imported_file_name').text(file.name);
-}
-
-
-const downloadUserChatHistory = async (uId) => {
-    location.href = BOT_API_BASE_URL + '/download/user/' + uId;
 }
 
 const deleteChatHandle = async (cId) => {
@@ -640,137 +543,27 @@ const deleteChatHandle = async (cId) => {
     }
 }
 
-const updateAnalysis = async () => {
-    try {
-        const axios = createAxiosInstance();
-        let start_time = jQuery("#start_date").val();
-        let end_time = jQuery("#end_date").val();
-        console.log(start_time, end_time);
-        if (start_time) start_time = "&start_time=" + new Date(start_time).getTime() / 1000;
-        if (end_time) end_time = "&end_time=" + new Date(end_time).getTime() / 1000;
-        console.log(start_time, end_time);
-        let response = await axios.get(`/admin?$${start_time}${end_time}`)
-        if (response.data) {
-            console.log(response.data);
-            let data = response.data.data;
-            jQuery('#totalChatCount').html(data.chat_count);
-            jQuery('#totalUserCount').html(data.user_count);
-            jQuery('#averageChatCount').html(Math.round(data.average_chat_count_by_user));
-            jQuery('#maxDuration').html(formatTimeBySecond(data.max_duration));
-            jQuery('#maxChatCountByOneUser').html(data.max_chat_count_by_one_user);
-            jQuery('#totalDownloadCount').html(data.total_download_count);
+const changeInitialPromptHandle = async (e) => {
+    let text = e.target.value;
 
-
-            jQuery('.bot-admin-content-container').removeClass('hidden');
-            jQuery('.bot-admin-login-container').addClass('hidden');
+    lastUpdatedTime = Date.now();
+    setTimeout(async () => {
+        let deft = Date.now() - lastUpdatedTime;
+        if (deft > 1000) {
+            const axios = createAxiosInstance();
+            let response = await axios.put('/admin/initial_prompt', {
+                text: text
+            });
         }
-    } catch (err) {
-        console.log("bot-admin-content-container", err)
-        jQuery('.bot-admin-content-container').addClass('hidden');
-        jQuery('.bot-admin-login-container').removeClass('hidden');
-    }
-}
-
-const downloadUserList = async () => {
-    location.href = BOT_API_BASE_URL + '/download/user/list';
+    }, 1000);
 }
 
 jQuery(document).ready(() => {
     (async () => {
-        updateAnalysis();
-
-        try {
-            const faqResponse = await axios.get(`/faq/0`);
-            if (faqResponse.data) {
-                let faqDatas = faqResponse.data.data;
-                faqDatas.map((item, index) => {
-                    let faq_row = `
-                        <li class="text-lg mt-2">
-                            ${item.text}
-                        </li>
-                    `;
-                    jQuery('.admin-faq-section').append(faq_row);
-                })
-                if (!faqDatas.length) {
-                    jQuery('.admin-faq-section').append('<li class="text-lg mt-2">There is nothing yet</li>');
-                }
-            }
-        } catch (err) {
-            console.log(err);
-        }
-
-        try {
-            const axios = createAxiosInstance();
-            const userResponse = await axios.get(`/users/0`);
-            if (userResponse.data) {
-                let userData = userResponse.data.data;
-                userData.map(item => {
-                    let userRow = `
-                        <div class="w-full flex items-center rounded-xl bg-white p-2 mb-4">
-                            <div class='w-1/4'>
-                                <p class='w-full text-center text-[24px]'>${item.first_name} ${item.last_name}</p>
-                            </div>
-                            <div class='w-1/3'>
-                                <p class='w-full text-center text-lg'>${item.phone}</p>
-                            </div>
-                            <div class='w-1/3'>
-                                <p class='w-full text-center text-lg'>${item.email}</p>
-                            </div>
-                            <div>
-                                <button onclick="downloadUserChatHistory(${item.id})" class="w-[32px] h-[32px] flex items-center justify-center ml-6">
-                                    <img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/download.png" alt="download" />
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    jQuery('.bot-admin-user-section').append(userRow);
-                });
-            }
-        } catch (err) {
-            console.log(err);
-        }
-
-        try {
-            const axios = createAxiosInstance();
-            const userResponse = await axios.get(`/faq/0`);
-            if (userResponse.data) {
-                let userData = userResponse.data.data;
-                userData.map(item => {
-                    let faqRow = `
-                        <div class="faq-row faq-${item.id} w-full flex items-center bg-white mb-4">
-                            <div class="w-full relative flex items-center">
-                                <input class='w-full px-4 py-2 border text-lg border-border focus:border-border rounded mr-2' value='${item.text}' readOnly placeholder='' />
-                            </div>
-                            <div class='flex items-center'>
-                                <button onclick="saveFaqHandle(${item.id})"
-                                    class="faq-save w-[26px] h-[26px] flex items-center justify-center ml-6 hidden">
-                                    <img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/save.png"
-                                        alt="saveImage" />
-                                </button>
-                                <button onclick="editFaqHandle(${item.id})"
-                                    class="faq-edit w-[24px] h-[24px] flex items-center justify-center ml-6">
-                                    <img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/edit.png"
-                                        alt="editImage" />
-                                </button>
-                                <button onclick="deleteFaqHandle(${item.id})"
-                                    class="faq-delete w-[28px] h-[28px] flex items-center justify-center ml-6">
-                                    <img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png"
-                                        alt="deleteImage" />
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    jQuery('.bot-admin-faq-section').append(faqRow);
-                });
-            }
-        } catch (err) {
-            console.log(err);
-        }
-
         try {
             let sId = sessionId();
             const axios = createAxiosInstance();
-            const response = await axios.get(`/chats/${sId}`);
+            const response = await axios.get(`/chats/${sId}?is_admin=1`);
             if (response.data) {
                 jQuery('.bot-admin-chat-wrap').find('.message-row').remove();
 
@@ -805,7 +598,7 @@ jQuery(document).ready(() => {
                                         <pre>${item.text}</pre>
                                         <button class="delete-chat absolute -right-[25px] bottom-[6px] w-[20px] h-[20px]" onclick="deleteChatHandle(${item.id})"><img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/delete.png" /></button>
                                     </div>
-                                    <img class='w-12 h-12 ml-4 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
+                                    <img class='w-12 h-12 ml-6 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
                                 </div>
                             </div>
                         `}
@@ -813,6 +606,20 @@ jQuery(document).ready(() => {
                     jQuery('.bot-admin-chat-wrap').append(chat_row);
                     scrollDownAdmin();
                 })
+                if (response.data.sessionId) {
+                    setSessionId(response.data.sessionId)
+                }
+            }
+        } catch (error) {
+
+        }
+
+        try {
+            const axios = createAxiosInstance();
+            const response = await axios.get(`/admin/initial_prompt`);
+            if (response.data) {
+                let text = response.data.data.text;
+                jQuery('#initial-prompt').val(text);
             }
         } catch (error) {
 

@@ -21,50 +21,26 @@
 
 <body>
 	<div class="bot-container">
-		<div class="hidden welcome-container w-full h-full flex flex-col items-center justify-between">
-			<div class="w-full flex items-center justify-end">
-
-				<div class='left-message w-full flex justify-end mb-2.5'>
-					<div class='flex'>
-						<div
-							class="left-message-text bg-secondary text-white shadow-message rounded-r-lg rounded-tl-lg p-2.5 mr-2.5">
-							Hi! let us know how can we help
-						</div>
-					</div>
-				</div>
-				<img class="cursor-pointer rounded-full" style="width: 60px; height: 60px;" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot"
-					onclick="goChathandle()" />
-			</div>
-		</div>
-
-		<div class="hidden chat-container w-[450px] h-[500px] overflow-hidden scroll-smooth items-center bg-bg-primary shadow-message">
+		<div class="chat-container overflow-hidden scroll-smooth items-center bg-bg-primary shadow-message">
 			<header class='w-full flex flex-col justify-around relative border-b border-border h-[60px]'>
-				<div class='w-full flex items-center justify-between relative'>
+				<div class='w-full h-[70px] flex items-center justify-between relative'>
 					<div class="flex items-center">
-						<div class='flex items-center mr-4'>
-							<img class='w-[60px] h-[60px] mr-3' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/logo.png" alt='logo' />
-							<div>
-								<h1 class='text-[24px] font-medium leading-none mb-1'>Amari</h1>
-								<p class='text-xs font-medium text-gray-500 italic'>First GenAi bot for Africa</p>
-							</div>
+						<div class='flex items-center'>
+							<img class='h-[40px] ml-6'
+								src="https://mychatbot.guru/wp-content/uploads/2023/07/MyChatBotGuru-LOGO-Transparent.png"
+								alt='logo' />
 						</div>
-
-						<select class="language-box hidden">
-							<option value="en" selected>EN</option>
-							<option value="fr">FR</option>
-						</select>
 					</div>
 					<div class='flex items-center'>
-						<button class='w-[16px] h-[16px] mr-6' onclick="closeWindow()">
-							<img src="https://afrilabsgathering.com/wp-content/uploads/2023/09/min.png" alt='minimize' />
+						<button class='w-[16px] h-[16px] mr-6' onclick="restartChatHandle()">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" class="h-4 w-4"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"></path></svg>
 						</button>
 						<button class='w-[16px] h-[16px] mr-6' onclick="changeSizeWindows()">
 							<div class="size-btn rotate-180">
-								<img class="rotate-180" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/max.png" alt='maximize' />
+								<img class="rotate-180"
+									src="https://afrilabsgathering.com/wp-content/uploads/2023/09/max.png"
+									alt='maximize' />
 							</div>
-						</button>
-						<button class='w-[16px] h-[16px] mr-6' onclick="closeWindow()">
-							<img src="https://afrilabsgathering.com/wp-content/uploads/2023/09/close.png" alt='close' />
 						</button>
 					</div>
 				</div>
@@ -78,7 +54,8 @@
 
 						<div class='message-row left-message w-full flex mb-2.5 mr-8'>
 							<div class='flex items-start'>
-								<img class='w-10 h-10 mr-2 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
+								<img class='w-10 h-10 mr-2 rounded-full'
+									src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
 								<div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
 									<pre>How can I help you today?</pre>
 									<!-- <div class='flex items-center h-[24px] overflow-hidden'>
@@ -91,8 +68,11 @@
 						<div class="faq-section hidden">
 							<div class='left-message w-full flex mb-2.5'>
 								<div class='flex items-start'>
-									<img class='w-10 h-10 mr-2 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
-									<div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+									<img class='w-10 h-10 mr-2 rounded-full'
+										src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg"
+										alt="bot" />
+									<div
+										class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
 										How can I help you today?
 									</div>
 								</div>
@@ -109,10 +89,12 @@
 									</div>
 								</span>
 							</div>
-							
+
 							<div class='notice-fr left-message w-full flex mb-2.5 pl-[48px]'>
 								<div class='flex items-start'>
-									<div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">Je peux aussi converser en français</div>
+									<div
+										class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+										Je peux aussi converser en français</div>
 								</div>
 							</div>
 						</div>
@@ -127,15 +109,19 @@
                                         <img class='w-[48px] h-[48px]' src="./imhttps://afrilabsgathering.com/wp-content/uploads/2023/09//loading-dots.gif" alt="loading" />
                                     </div> -->
 								</div>
-								<img class='w-12 h-12 ml-4 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
+								<img class='w-12 h-12 ml-4 rounded-full'
+									src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
 							</div>
 						</div>
 
 						<div class="user-form hidden">
 							<div class='left-message w-full flex mb-2.5'>
 								<div class='flex items-start'>
-									<img class='w-10 h-10 mr-2 rounded-full' src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg" alt="bot" />
-									<div class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
+									<img class='w-10 h-10 mr-2 rounded-full'
+										src="https://afrilabsgathering.com/wp-content/uploads/2023/09/bot.jpg"
+										alt="bot" />
+									<div
+										class="left-message-text bg-white shadow-message rounded-r-lg rounded-tl-lg p-2.5">
 										Please provide the below information to continue
 										<!-- <div class='flex items-center h-[24px] overflow-hidden'>
                                             <img class='w-[48px] h-[48px]' src="./imhttps://afrilabsgathering.com/wp-content/uploads/2023/09//loading-dots.gif" alt="loading" />
@@ -146,7 +132,8 @@
 							<div class='w-[320px] ml-[56px] '>
 								<div class='w-full flex mb-2'>
 									<div class="required-input w-full relative flex items-center">
-										<input id="firstname" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
+										<input id="firstname"
+											class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
 											placeholder='First Name' />
 										<!-- <div class='absolute left-4 h-[20px] aspect-[1/1]'>
                                             <img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/simple-loading.gif" alt='loading' />
@@ -156,22 +143,26 @@
                                         </div> -->
 									</div>
 									<div class="required-input w-full relative flex items-center">
-										<input id="lastname" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
+										<input id="lastname"
+											class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
 											placeholder='Last Name' />
 									</div>
 								</div>
 								<div class='w-full flex mb-2'>
 									<div class="required-input w-full relative flex items-center">
-										<input id="email" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
+										<input id="email"
+											class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
 											placeholder='Email' />
 									</div>
 									<div class="w-full relative flex items-center">
-										<input id="phone" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
+										<input id="phone"
+											class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
 											placeholder='Phone' />
 									</div>
 								</div>
 								<div class="w-full flex mb-2">
-									<button onclick="sendHandle(true)" class="rounded-lg text-white bg-primary px-4 py-1.5">Submit</button>
+									<button onclick="sendHandle(true)"
+										class="rounded-lg text-white bg-primary px-4 py-1.5">Submit</button>
 								</div>
 							</div>
 						</div>
@@ -179,36 +170,29 @@
 					</div>
 
 					<div class="full">
-						<div class='w-full flex justify-between items-center relative mb-2'>
+						<div class='w-full flex justify-between items-center relative'>
 							<div class="flex items-center">
-
-								<button class="hidden w-[24px] h-[24px] flex items-center justify-center bg-white rounded-full mr-2">
-									<img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/chat_history.png" alt="chat history" />
+								<button class="w-[24px] h-[24px] relative flex items-center justify-center mr-4">
+									<input id="file_import" onchange="fileChangeHandle(event)"
+										class="absolute left-0 top-0 w-[24px] h-[24px] bg-transparent opacity-0"
+										type="file" />
+									<span
+										class="imported_file_name max-w-[100px] max-h-[20px] overflow-hidden text-ellipsis text-left absolute left-0 -top-5 text-sm"></span>
+									<img class="w-full h-full"
+										src="https://afrilabsgathering.com/wp-content/uploads/2023/09/file_import.png"
+										alt="file import" />
 								</button>
-								<button class="hidden w-[24px] h-[24px] relative flex items-center justify-center mr-2">
-									<input class="absolute left-0 top-0 w-[19px] h-[19px] bg-transparent opacity-0" type="file" />
-									<!-- <span class="w-[200px] text-left absolute left-0 -top-5 text-sm">{file?.name}</span> -->
-									<img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/file_import.png" alt="file import" />
-								</button>
-
-
-								<button class="hidden w-[24px] h-[24px] flex items-center justify-center bg-white rounded-full mr-2">
-									<img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/plus.png" alt="plus" />
-								</button>
-								<a onclick="downloadTranscript()" class="w-[24px] h-[24px] flex items-center justify-center mr-2">
-									<img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/download.png" alt="download" />
-								</a>
-
 							</div>
 							<div class="w-full relative flex items-center">
-								<input id="text" class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2' placeholder='Type something...' 
-									onkeydown="handleKeydown(event)"
-								/>
+								<input id="text"
+									class='w-full px-4 py-2 border border-border focus:border-border rounded mr-2'
+									placeholder='Type something...' onkeydown="handleKeydown(event)" />
 							</div>
-							<button class="w-[36px] h-[24px] flex items-center justify-center" onclick="sendHandle()">
-								<img class="w-full h-full" src="https://afrilabsgathering.com/wp-content/uploads/2023/09/send.png" alt="send" />
+							<button class="w-[32px] h-[24px] flex items-center justify-center" onclick="sendHandle()">
+								<img class="w-full h-full"
+									src="https://afrilabsgathering.com/wp-content/uploads/2023/09/send.png"
+									alt="send" />
 							</button>
-							<span class="absolute right-0 top-[40px] text-gray-500 text-xs">Powered by Flashbot</span>
 						</div>
 					</div>
 				</div>

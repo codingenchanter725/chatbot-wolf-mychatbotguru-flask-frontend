@@ -4,9 +4,18 @@
 
 .bot-container {
     position: fixed;
-    right: 40px !important;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+}
+
+.chat-container {
+    width: 1024px !important;
+    height: 768px !important;
+    position: fixed;
+    right: calc(50vw - 512px);
     top: unset !important;
-    bottom: 40px !important;
+    bottom: calc(50vh - 384px);
     z-index: 1100000;
 }
 
@@ -48,7 +57,7 @@
 
 .bot-admin-container {
     width: 100vw;
-    height: calc(100vh - 73px);
+    height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
